@@ -29,11 +29,11 @@ public class ModelGenerator {
     private static void generateBody(EntityData entityData, PartDefinition partDefinition) {
         List<EntityData.CubeSegment> bodySegments = entityData.bodySegments();
         CubeListBuilder bodyBuilder = new CubeListBuilder();
-        generateCubes(bodyBuilder, bodySegments);
+        generateCubes(bodyBuilder, bodySegments, entityData.sizes());
         partDefinition.addOrReplaceChild("body", bodyBuilder, PartPose.ZERO);
     }
 
-    private static void generateCubes(CubeListBuilder builder, List<EntityData.CubeSegment> cubeSegments) {
+    private static void generateCubes(CubeListBuilder builder, List<EntityData.CubeSegment> cubeSegments, EntityData.Sizes sizes) {
         int currentX = 0;
         int prevY = cubeSegments.getFirst().y();
         float prevYOffset = 0;
@@ -44,7 +44,7 @@ public class ModelGenerator {
             float newYOffset = prevYOffset + prevY / 2.0F - segment.y() / 2.0F;
             float newZOffset = prevZOffset + prevZ / 2.0F - segment.z() / 2.0F;
             builder.texOffs(5, 5)
-                    .addBox(currentX, newYOffset,newZOffset, segment.x(), segment.y(), segment.z());
+                    .addBox(currentX - sizes.maxX() / 2.0F, newYOffset, newZOffset - sizes.maxZ() / 2.0F, segment.x(), segment.y(), segment.z());
             currentX += segment.x();
             prevY = segment.y();
             prevZ = segment.z();
