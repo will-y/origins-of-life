@@ -7,6 +7,7 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.util.Mth;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -30,10 +31,14 @@ public class ModelGenerator {
         List<EntityData.CubeSegment> bodySegments = entityData.bodySegments();
         CubeListBuilder bodyBuilder = new CubeListBuilder();
         generateCubes(bodyBuilder, bodySegments, entityData.sizes());
-        partDefinition.addOrReplaceChild("body", bodyBuilder, PartPose.ZERO);
+        partDefinition.addOrReplaceChild("body", bodyBuilder, PartPose.rotation(0, -Mth.PI / 2.0F, 0));
     }
 
     private static void generateCubes(CubeListBuilder builder, List<EntityData.CubeSegment> cubeSegments, EntityData.Sizes sizes) {
+        if (cubeSegments.isEmpty()) {
+            return;
+        }
+
         int currentX = 0;
         int prevY = cubeSegments.getFirst().y();
         float prevYOffset = 0;

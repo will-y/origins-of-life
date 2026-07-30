@@ -1,10 +1,110 @@
 package dev.willyelton.origins.common.entity;
 
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
+import net.minecraft.world.entity.ai.goal.PanicGoal;
+import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.fluids.FluidType;
 
 public class AquaticCreature extends CreatureEntity {
     public AquaticCreature(EntityType<? extends AquaticCreature> type, Level level) {
         super(type, level);
+        this.setPathfindingMalus(PathType.WATER, 0.0F);
+        this.moveControl = new AquaticCreatureMoveControl<>(this);
+    }
+
+    @Override
+    protected void registerGoals() {
+        super.registerGoals();
+        this.goalSelector.addGoal(0, new PanicGoal(this, 1.25));
+        this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, Player.class, 8.0F, 1.6, 1.4, EntitySelector.NO_SPECTATORS));
+        this.goalSelector.addGoal(4, new RandomSwimmingGoal(this, 1, 40));
+    }
+
+    @Override
+    protected PathNavigation createNavigation(Level level) {
+        return new WaterBoundPathNavigation(this, level);
+    }
+
+    @Override
+    protected void travelInWater(Vec3 input, double baseGravity, boolean isFalling, double oldY) {
+        this.moveRelative(0.01F, input);
+        this.move(MoverType.SELF, this.getDeltaMovement());
+        this.setDeltaMovement(this.getDeltaMovement().scale(0.9));
+        if (this.getTarget() == null) {
+            this.setDeltaMovement(this.getDeltaMovement().add(0.0, -0.005, 0.0));
+        }
+    }
+
+    @Override
+    public void baseTick() {
+        int airSupply = this.getAirSupply();
+        super.baseTick();
+        if (this.level() instanceof ServerLevel serverLevel) {
+            this.handleAirSupply(serverLevel, airSupply);
+        }
+    }
+
+    protected void handleAirSupply(ServerLevel level, int preTickAirSupply) {
+        if (this.isAlive() && !this.isInWater()) {
+            this.setAirSupply(preTickAirSupply - 1);
+            if (this.shouldTakeDrowningDamage()) {
+                this.setAirSupply(0);
+                this.hurtServer(level, this.damageSources().drown(), 2.0F);
+            }
+        } else {
+            this.setAirSupply(300);
+        }
+    }
+
+    @Override
+    public boolean isPushedByFluid(FluidType fluidType) {
+        return false;
+    }
+
+    private static class AquaticCreatureMoveControl<T extends AquaticCreature> extends MoveControl<T> {
+        public AquaticCreatureMoveControl(T creature) {
+            super(creature);
+        }
+
+        @Override
+        public void tick() {
+            if (this.mob.isEyeInFluid(FluidTags.WATER)) {
+                this.mob.setDeltaMovement(this.mob.getDeltaMovement().add(0.0, 0.005, 0.0));
+            }
+
+            if (this.operation == MoveControl.Operation.MOVE_TO && !this.mob.getNavigation().isDone()) {
+                float targetSpeed = (float)(this.speedModifier * this.mob.getAttributeValue(Attributes.MOVEMENT_SPEED));
+                this.mob.setSpeed(Mth.lerp(0.125F, this.mob.getSpeed(), targetSpeed));
+                double xd = this.wantedX - this.mob.getX();
+                double yd = this.wantedY - this.mob.getY();
+                double zd = this.wantedZ - this.mob.getZ();
+                if (yd != 0.0) {
+                    double dd = Math.sqrt(xd * xd + yd * yd + zd * zd);
+                    this.mob.setDeltaMovement(this.mob.getDeltaMovement().add(0.0, this.mob.getSpeed() * (yd / dd) * 0.1, 0.0));
+                }
+
+                if (xd != 0.0 || zd != 0.0) {
+                    float yRotD = (float)(Mth.atan2(zd, xd) * 180.0F / (float)Math.PI) - 90.0F;
+                    this.mob.setYRot(this.rotlerp(this.mob.getYRot(), yRotD, 90.0F));
+                    this.mob.yBodyRot = this.mob.getYRot();
+                }
+            } else {
+                this.mob.setSpeed(0.0F);
+            }
+        }
     }
 }

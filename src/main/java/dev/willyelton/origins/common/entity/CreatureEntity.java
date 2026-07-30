@@ -1,27 +1,61 @@
 package dev.willyelton.origins.common.entity;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityAttachments;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 
-public abstract class CreatureEntity extends PathfinderMob {
-    private final EntityData entityData;
+public abstract class CreatureEntity extends PathfinderMob implements IEntityWithComplexSpawn {
+
+//    private static final EntityDataAccessor<EntityData> ENTITY_DATA_STATE = SynchedEntityData.defineId(
+//            CreatureEntity.class, EntityDataSerializer.forValueType(EntityData.STREAM_CODEC));
+
+    private EntityData entityData;
     private final EntityDimensions entityDimensions;
 
     protected CreatureEntity(EntityType<? extends PathfinderMob> type, Level level) {
         this.entityData = EntityDataGenerator.random();
         super(type, level);
         entityDimensions = createDimensions(entityData);
-
     }
 
     public EntityData entityData() {
         return entityData;
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder entityData) {
+        super.defineSynchedData(entityData);
+//        entityData.define(ENTITY_DATA_STATE, EntityDataGenerator.empty());
+    }
+
+    @Override
+    protected void readAdditionalSaveData(ValueInput input) {
+        this.entityData = input.read("entity_data", EntityData.CODEC).orElse(EntityDataGenerator.empty());
+    }
+
+    @Override
+    protected void addAdditionalSaveData(ValueOutput output) {
+        output.store("entity_data", EntityData.CODEC,  this.entityData);
+    }
+
+    @Override
+    public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
+        EntityData.STREAM_CODEC.encode(buffer, this.entityData);
+    }
+
+    @Override
+    public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
+        this.entityData = EntityData.STREAM_CODEC.decode(additionalData);
     }
 
     @Override
@@ -39,7 +73,10 @@ public abstract class CreatureEntity extends PathfinderMob {
     @Override
     protected AABB makeBoundingBox(Vec3 position) {
         EntityData.Sizes sizes = entityData.sizes();
-        return new AABB(position.x - sizes.maxX() / 32.0, position.y, position.z - sizes.maxZ() / 32.0,
-                position.x + sizes.maxX() / 32.0, position.y + sizes.maxY() / 16.0, position.z + sizes.maxZ() / 32.0);
+        return new AABB(position.x - sizes.maxX() / 32.0, position.y, position.z - sizes.maxX() / 32.0,
+                position.x + sizes.maxX() / 32.0, position.y + sizes.maxY() / 16.0, position.z + sizes.maxX() / 32.0);
+        // Closer but can't rotate these:
+//        return new AABB(position.x - sizes.maxX() / 32.0, position.y, position.z - sizes.maxZ() / 32.0,
+//                position.x + sizes.maxX() / 32.0, position.y + sizes.maxY() / 16.0, position.z + sizes.maxZ() / 32.0);
     }
 }

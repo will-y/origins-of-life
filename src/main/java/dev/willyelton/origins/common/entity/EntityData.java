@@ -1,5 +1,10 @@
 package dev.willyelton.origins.common.entity;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.RandomSource;
 import org.jspecify.annotations.Nullable;
 
@@ -8,6 +13,13 @@ import java.util.Objects;
 
 /// Stores all attributes of an entity (cannot change)
 public final class EntityData {
+    public static final Codec<EntityData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            CubeSegment.CODEC.listOf().fieldOf("bodySegments").forGetter(EntityData::bodySegments)
+    ).apply(instance, EntityData::new));
+    public static final StreamCodec<RegistryFriendlyByteBuf, EntityData> STREAM_CODEC = StreamCodec.composite(
+            CubeSegment.STREAM_CODEC.apply(ByteBufCodecs.list()), EntityData::bodySegments,
+            EntityData::new);
+
     private final List<CubeSegment> bodySegments;
     private @Nullable Sizes sizes = null;
 
@@ -52,6 +64,17 @@ public final class EntityData {
     }
 
     public record CubeSegment(int x, int y, int z) {
+        public static final Codec<CubeSegment> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.INT.fieldOf("x").forGetter(CubeSegment::x),
+                Codec.INT.fieldOf("y").forGetter(CubeSegment::y),
+                Codec.INT.fieldOf("z").forGetter(CubeSegment::z)
+        ).apply(instance, CubeSegment::new));
+        public static final StreamCodec<RegistryFriendlyByteBuf, CubeSegment> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.INT, CubeSegment::x,
+                ByteBufCodecs.INT, CubeSegment::y,
+                ByteBufCodecs.INT, CubeSegment::z,
+                CubeSegment::new);
+
         public static CubeSegment random(RandomSource random, int min, int max) {
             int x = random.nextIntBetweenInclusive(min, max);
             int y = random.nextIntBetweenInclusive(min, max);
