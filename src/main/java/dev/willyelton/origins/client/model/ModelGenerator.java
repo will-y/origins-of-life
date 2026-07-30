@@ -29,12 +29,17 @@ public class ModelGenerator {
 
     private static void generateBody(EntityData entityData, PartDefinition partDefinition) {
         List<EntityData.CubeSegment> bodySegments = entityData.bodySegments();
-        CubeListBuilder bodyBuilder = new CubeListBuilder();
-        generateCubes(bodyBuilder, bodySegments, entityData.sizes());
-        partDefinition.addOrReplaceChild("body", bodyBuilder, PartPose.rotation(0, -Mth.PI / 2.0F, 0));
+        List<CubeListBuilder> bodyBuilders = entityData.bodySegments().stream().map(x -> new CubeListBuilder()).toList();
+        generateCubes(bodyBuilders, bodySegments, entityData.sizes());
+        PartDefinition body = partDefinition.addOrReplaceChild("body", new CubeListBuilder(), PartPose.rotation(0, -Mth.PI / 2.0F, 0));
+
+        for (CubeListBuilder cubeListBuilder : bodyBuilders) {
+            body = body.addOrReplaceChild("body_segment", cubeListBuilder, PartPose.ZERO);
+        }
     }
 
-    private static void generateCubes(CubeListBuilder builder, List<EntityData.CubeSegment> cubeSegments, EntityData.Sizes sizes) {
+    // TODO: These each need to be separate model parts for animation
+    private static void generateCubes(List<CubeListBuilder> builders, List<EntityData.CubeSegment> cubeSegments, EntityData.Sizes sizes) {
         if (cubeSegments.isEmpty()) {
             return;
         }
@@ -45,10 +50,11 @@ public class ModelGenerator {
         int prevZ = cubeSegments.getFirst().z();
         float prevZOffset = 0;
 
-        for (EntityData.CubeSegment segment : cubeSegments) {
+        for (int i = 0; i < cubeSegments.size(); i++) {
+            EntityData.CubeSegment segment = cubeSegments.get(i);
             float newYOffset = prevYOffset + prevY / 2.0F - segment.y() / 2.0F;
             float newZOffset = prevZOffset + prevZ / 2.0F - segment.z() / 2.0F;
-            builder.texOffs(5, 5)
+            builders.get(i).texOffs(5, 5)
                     .addBox(currentX - sizes.maxX() / 2.0F, newYOffset, newZOffset - sizes.maxZ() / 2.0F, segment.x(), segment.y(), segment.z());
             currentX += segment.x();
             prevY = segment.y();
@@ -71,7 +77,7 @@ public class ModelGenerator {
         PartDefinition root = mesh.getRoot();
 
         PartDefinition main = root.addOrReplaceChild(
-                "main",
+                "body",
                 CubeListBuilder.create()
                         .texOffs(0, 0)
                         .addBox(-10, -10, -10, 10, 10, 10),
