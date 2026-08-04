@@ -39,6 +39,7 @@ public class CreatureModel extends EntityModel<CreatureRenderState> {
         super.setupAnim(state);
 
         super.setupAnim(state);
+        // TODO: Change based on movement speed
         float amplitudeMultiplier = 1.0F;
         float angleMultiplier = 1.0F;
         if (!state.isInWater) {
@@ -48,7 +49,7 @@ public class CreatureModel extends EntityModel<CreatureRenderState> {
 
         for (int i = 0; i < this.bodySegments.length; i++) {
             ModelPart part = this.bodySegments[i];
-            part.yRot = -amplitudeMultiplier * 0.25F * Mth.sin(angleMultiplier * 0.6F * state.ageInTicks + (Math.PI / 8.0F) * i );
+            part.yRot = -amplitudeMultiplier * 0.25F * Mth.sin(angleMultiplier * 0.6F * state.ageInTicks + (Math.PI / 8.0F) * i) * i / 8.0F;
         }
     }
 }
