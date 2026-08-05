@@ -20,7 +20,7 @@ public class EntityDataGenerator {
     private static final int[] BODY_NEXT_Y_Z_SIZE_WEIGHTS = new int[]{60, 70, 80, 90, 10};
 
     public static EntityData empty() {
-        return new EntityData(new ArrayList<>());
+        return new EntityData(EntityData.CubeSegment.randomSquare(randomSource(), 1, 5), new ArrayList<>());
     }
 
     public static EntityData random() {
@@ -34,14 +34,14 @@ public class EntityDataGenerator {
         List<EntityData.CubeSegment> bodySegments = new ArrayList<>();
 
         // TODO: Base this off of the head
-        EntityData.CubeSegment current = EntityData.CubeSegment.randomSquare(rand, MIN_BASE_BODY_SIZE, MAX_BASE_BODY_SIZE);
-        bodySegments.add(current);
-        for (int i = 1; i < bodySegmentCount; i++) {
+        EntityData.CubeSegment head = EntityData.CubeSegment.randomSquare(rand, MIN_BASE_BODY_SIZE, MAX_BASE_BODY_SIZE);
+        EntityData.CubeSegment current = head;
+        for (int i = 0; i < bodySegmentCount; i++) {
             current = nextSegment(current, bodyXSizeDistribution, bodyYZSizeDistribution);
             bodySegments.add(current);
         }
 
-        return new EntityData(bodySegments);
+        return new EntityData(head, bodySegments);
     }
 
     private static EntityData.CubeSegment nextSegment(EntityData.CubeSegment current, Distribution xDistribution,

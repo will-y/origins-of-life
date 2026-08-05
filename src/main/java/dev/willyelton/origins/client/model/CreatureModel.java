@@ -24,7 +24,7 @@ public class CreatureModel extends EntityModel<CreatureRenderState> {
 
             List<ModelPart> bodyParts = new ArrayList<>();
             while (body.hasChild("body_segment")) {
-                body =  body.getChild("body_segment");
+                body = body.getChild("body_segment");
                 bodyParts.add(body);
             }
 

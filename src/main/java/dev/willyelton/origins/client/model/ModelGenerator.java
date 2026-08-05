@@ -28,9 +28,9 @@ public class ModelGenerator {
     }
 
     private static void generateBody(EntityData entityData, PartDefinition partDefinition) {
-        List<EntityData.CubeSegment> bodySegments = entityData.bodySegments();
-        List<CubeListBuilder> bodyBuilders = entityData.bodySegments().stream().map(x -> new CubeListBuilder()).toList();
-        generateCubes(bodyBuilders, bodySegments, entityData.sizes());
+        List<EntityData.CubeSegment> allSegments = entityData.allSegments();
+        List<CubeListBuilder> bodyBuilders = allSegments.stream().map(x -> new CubeListBuilder()).toList();
+        generateCubes(bodyBuilders, allSegments, entityData.sizes());
         PartDefinition body = partDefinition.addOrReplaceChild("body", new CubeListBuilder(),
                 PartPose.offsetAndRotation(0,0, 0,
                         0, -Mth.PI / 2.0F, 0));

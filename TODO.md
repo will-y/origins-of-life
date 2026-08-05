@@ -3,9 +3,9 @@
 - Hitboxes (y is messed up)
 - Textures
 - Fins (random angle and placement)
-- Head (cache total list of body parts)
-- Body parts know their positions too (not done in model generator)
-- Allow rectangle body shapes
+- Head
+  - Add different head shapes
+  - Change body count offset by one so it is more common to just have a head again?
 - Swim animations (just change based on speed)
   - Animation types? Vertical vs horizontal sin wave to start
   - Stored in entity data

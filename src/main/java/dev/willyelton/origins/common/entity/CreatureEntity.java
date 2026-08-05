@@ -65,8 +65,8 @@ public abstract class CreatureEntity extends PathfinderMob implements IEntityWit
     }
 
     private EntityDimensions createDimensions(EntityData entityData) {
-        float x = entityData.bodySegments().stream().mapToInt(EntityData.CubeSegment::x).sum() / 16.0F;
-        float y = entityData.bodySegments().stream().mapToInt(EntityData.CubeSegment::y).max().orElse(0) / 16.0F;
+        float x = entityData.allSegments().stream().mapToInt(EntityData.CubeSegment::x).sum() / 16.0F;
+        float y = entityData.allSegments().stream().mapToInt(EntityData.CubeSegment::y).max().orElse(0) / 16.0F;
 
         return new EntityDimensions(x, y, 0.85F * y, EntityAttachments.createDefault(x, y), false);
     }

@@ -10,33 +10,53 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 /// Stores all attributes of an entity (cannot change)
 public final class EntityData {
     public static final Codec<EntityData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            CubeSegment.CODEC.fieldOf("head").forGetter(EntityData::head),
             CubeSegment.CODEC.listOf().fieldOf("bodySegments").forGetter(EntityData::bodySegments)
     ).apply(instance, EntityData::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, EntityData> STREAM_CODEC = StreamCodec.composite(
+            CubeSegment.STREAM_CODEC, EntityData::head,
             CubeSegment.STREAM_CODEC.apply(ByteBufCodecs.list()), EntityData::bodySegments,
             EntityData::new);
 
+    private final CubeSegment head;
     private final List<CubeSegment> bodySegments;
+    private @Nullable List<CubeSegment> allSegments;
+
     private @Nullable Sizes sizes = null;
 
-    public EntityData(List<CubeSegment> bodySegments) {
+    public EntityData(CubeSegment head, List<CubeSegment> bodySegments) {
+        this.head = head;
         this.bodySegments = bodySegments;
+    }
+
+    public CubeSegment head() {
+        return head;
     }
 
     public List<CubeSegment> bodySegments() {
         return bodySegments;
     }
 
+    public List<CubeSegment> allSegments() {
+        if (allSegments == null) {
+            allSegments = Stream.concat(Stream.of(head), bodySegments.stream()).toList();
+        }
+
+        return allSegments;
+    }
+
     /// Returns some things about the computed model's size (in model space, not block space)
+    /// TODO: Fix these now that we know placements
     public Sizes sizes() {
         if (sizes == null) {
-            int maxX = bodySegments().stream().mapToInt(EntityData.CubeSegment::x).sum();
-            int maxY = bodySegments().stream().mapToInt(EntityData.CubeSegment::y).max().orElse(0);
-            int maxZ = bodySegments().stream().mapToInt(EntityData.CubeSegment::z).max().orElse(0);
+            int maxX = allSegments().stream().mapToInt(EntityData.CubeSegment::x).sum();
+            int maxY = allSegments().stream().mapToInt(EntityData.CubeSegment::y).max().orElse(0);
+            int maxZ = allSegments().stream().mapToInt(EntityData.CubeSegment::z).max().orElse(0);
             sizes = new Sizes(maxX, maxY, maxZ, maxX / 2.0F, maxY / 2.0F, maxZ / 2.0F);
         }
         return sizes;
