@@ -10,6 +10,7 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
 import org.jspecify.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /// Takes in entity data and creates the model
@@ -28,12 +29,22 @@ public class ModelGenerator {
     }
 
     private static void generateBody(EntityData entityData, PartDefinition partDefinition) {
-        List<EntityData.CubeSegment> allSegments = entityData.allSegments();
-        List<CubeListBuilder> bodyBuilders = allSegments.stream().map(x -> new CubeListBuilder()).toList();
-        generateCubes(bodyBuilders, allSegments, entityData.sizes());
-        PartDefinition body = partDefinition.addOrReplaceChild("body", new CubeListBuilder(),
+        PartDefinition main = partDefinition.addOrReplaceChild("main", new CubeListBuilder(), PartPose.rotation(0, -Mth.PI / 2.0F, 0));
+
+        // Head
+        CubeListBuilder headBuilder = new CubeListBuilder();
+        generateCubes(List.of(headBuilder), List.of(entityData.head()), entityData.sizes());
+
+        main.addOrReplaceChild("head", headBuilder, PartPose.rotation(0, 0, 0));
+
+        // Body
+        List<EntityData.CubeSegment> bodySegments = entityData.bodySegments();
+        List<CubeListBuilder> bodyBuilders = new ArrayList<>(bodySegments.stream().map(_ -> new CubeListBuilder()).toList());
+        generateCubes(bodyBuilders, bodySegments, entityData.sizes());
+        CubeListBuilder firstBodyBuilder = bodyBuilders.isEmpty() ? new CubeListBuilder() :  bodyBuilders.removeFirst();
+        PartDefinition body = main.addOrReplaceChild("body", firstBodyBuilder,
                 PartPose.offsetAndRotation(0,0, 0,
-                        0, -Mth.PI / 2.0F, 0));
+                        0, 0, 0));
 
         for (CubeListBuilder cubeListBuilder : bodyBuilders) {
             body = body.addOrReplaceChild("body_segment", cubeListBuilder, PartPose.ZERO);

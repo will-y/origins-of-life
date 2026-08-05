@@ -19,26 +19,31 @@ public class CreatureModel extends EntityModel<CreatureRenderState> {
     public CreatureModel(ModelPart root) {
         super(root);
 
-        if (root.hasChild("body")) {
-            ModelPart body = root.getChild("body");
+        if (root.hasChild("main")) {
+            ModelPart main = root.getChild("main");
 
-            List<ModelPart> bodyParts = new ArrayList<>();
-            while (body.hasChild("body_segment")) {
-                body = body.getChild("body_segment");
+            if (main.hasChild("body")) {
+                List<ModelPart> bodyParts = new ArrayList<>();
+                ModelPart body = main.getChild("body");
                 bodyParts.add(body);
-            }
 
-            this.bodySegments = bodyParts.toArray(new ModelPart[0]);
-        } else {
-            this.bodySegments = new ModelPart[0];
+                while (body.hasChild("body_segment")) {
+                    body = body.getChild("body_segment");
+                    bodyParts.add(body);
+                }
+
+                this.bodySegments = bodyParts.toArray(new ModelPart[0]);
+                return;
+            }
         }
+
+        this.bodySegments = new ModelPart[0];
     }
 
     @Override
     public void setupAnim(CreatureRenderState state) {
         super.setupAnim(state);
 
-        super.setupAnim(state);
         // TODO: Change based on movement speed
         float amplitudeMultiplier = 1.0F;
         float angleMultiplier = 1.0F;
@@ -49,7 +54,7 @@ public class CreatureModel extends EntityModel<CreatureRenderState> {
 
         for (int i = 0; i < this.bodySegments.length; i++) {
             ModelPart part = this.bodySegments[i];
-            part.yRot = -amplitudeMultiplier * 0.25F * Mth.sin(angleMultiplier * 0.6F * state.ageInTicks + (Math.PI / 8.0F) * i) * i / 8.0F;
+            part.yRot = -amplitudeMultiplier * 0.25F * Mth.sin(angleMultiplier * 0.6F * state.ageInTicks + (Math.PI / 8.0F) * (i + 1)) * (i + 1) / 8.0F;
         }
     }
 }
