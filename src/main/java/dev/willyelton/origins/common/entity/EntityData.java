@@ -63,24 +63,31 @@ public final class EntityData {
                 "sizes=" + sizes + ']';
     }
 
-    public record CubeSegment(int x, int y, int z) {
+    public record CubeSegment(float x0, float y0, float z0, int x, int y, int z) {
         public static final Codec<CubeSegment> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.FLOAT.fieldOf("x0").forGetter(CubeSegment::x0),
+                Codec.FLOAT.fieldOf("y0").forGetter(CubeSegment::y0),
+                Codec.FLOAT.fieldOf("z0").forGetter(CubeSegment::z0),
                 Codec.INT.fieldOf("x").forGetter(CubeSegment::x),
                 Codec.INT.fieldOf("y").forGetter(CubeSegment::y),
                 Codec.INT.fieldOf("z").forGetter(CubeSegment::z)
         ).apply(instance, CubeSegment::new));
+
         public static final StreamCodec<RegistryFriendlyByteBuf, CubeSegment> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.FLOAT, CubeSegment::x0,
+                ByteBufCodecs.FLOAT, CubeSegment::y0,
+                ByteBufCodecs.FLOAT, CubeSegment::z0,
                 ByteBufCodecs.INT, CubeSegment::x,
                 ByteBufCodecs.INT, CubeSegment::y,
                 ByteBufCodecs.INT, CubeSegment::z,
                 CubeSegment::new);
 
-        public static CubeSegment random(RandomSource random, int min, int max) {
-            int x = random.nextIntBetweenInclusive(min, max);
-            int y = random.nextIntBetweenInclusive(min, max);
-            int z = random.nextIntBetweenInclusive(min, max);
+        public CubeSegment(int x, int y, int z) {
+            this(0, 0, 0, x, y, z);
+        }
 
-            return new CubeSegment(x, y, z);
+        public CubeSegment withOffset(float x0, float y0, float z0) {
+            return new CubeSegment(x0, y0, z0, x, y, z);
         }
 
         public static CubeSegment randomSquare(RandomSource random, int min, int max) {

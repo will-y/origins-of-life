@@ -31,36 +31,24 @@ public class ModelGenerator {
         List<EntityData.CubeSegment> bodySegments = entityData.bodySegments();
         List<CubeListBuilder> bodyBuilders = entityData.bodySegments().stream().map(x -> new CubeListBuilder()).toList();
         generateCubes(bodyBuilders, bodySegments, entityData.sizes());
-        PartDefinition body = partDefinition.addOrReplaceChild("body", new CubeListBuilder(), PartPose.rotation(0, -Mth.PI / 2.0F, 0));
+        PartDefinition body = partDefinition.addOrReplaceChild("body", new CubeListBuilder(),
+                PartPose.offsetAndRotation(0,0, 0,
+                        0, -Mth.PI / 2.0F, 0));
 
         for (CubeListBuilder cubeListBuilder : bodyBuilders) {
             body = body.addOrReplaceChild("body_segment", cubeListBuilder, PartPose.ZERO);
         }
     }
 
-    // TODO: These each need to be separate model parts for animation
     private static void generateCubes(List<CubeListBuilder> builders, List<EntityData.CubeSegment> cubeSegments, EntityData.Sizes sizes) {
         if (cubeSegments.isEmpty()) {
             return;
         }
 
-        int currentX = 0;
-        int prevY = cubeSegments.getFirst().y();
-        float prevYOffset = 0;
-        int prevZ = cubeSegments.getFirst().z();
-        float prevZOffset = 0;
-
         for (int i = 0; i < cubeSegments.size(); i++) {
             EntityData.CubeSegment segment = cubeSegments.get(i);
-            float newYOffset = prevYOffset + prevY / 2.0F - segment.y() / 2.0F;
-            float newZOffset = prevZOffset + prevZ / 2.0F - segment.z() / 2.0F;
             builders.get(i).texOffs(5, 5)
-                    .addBox(currentX - sizes.maxX() / 2.0F, newYOffset, newZOffset - sizes.maxZ() / 2.0F, segment.x(), segment.y(), segment.z());
-            currentX += segment.x();
-            prevY = segment.y();
-            prevZ = segment.z();
-            prevYOffset = newYOffset;
-            prevZOffset = newZOffset;
+                    .addBox(segment.x0() - sizes.centerX(), segment.y0(), segment.z0() - sizes.centerZ(), segment.x(), segment.y(), segment.z());
         }
     }
 

@@ -20,12 +20,12 @@ public abstract class CreatureEntity extends PathfinderMob implements IEntityWit
 //            CreatureEntity.class, EntityDataSerializer.forValueType(EntityData.STREAM_CODEC));
 
     private EntityData entityData;
-    private final EntityDimensions entityDimensions;
 
     protected CreatureEntity(EntityType<? extends PathfinderMob> type, Level level) {
         this.entityData = EntityDataGenerator.random();
         super(type, level);
-        entityDimensions = createDimensions(entityData);
+        // Use Entity Dimensions
+        this.dimensions = createDimensions(entityData);
     }
 
     public EntityData entityData() {
@@ -56,11 +56,12 @@ public abstract class CreatureEntity extends PathfinderMob implements IEntityWit
     @Override
     public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
         this.entityData = EntityData.STREAM_CODEC.decode(additionalData);
+        this.dimensions = createDimensions(entityData);
     }
 
     @Override
     protected EntityDimensions getDefaultDimensions(Pose pose) {
-        return entityDimensions;
+        return dimensions;
     }
 
     private EntityDimensions createDimensions(EntityData entityData) {

@@ -44,14 +44,19 @@ public class EntityDataGenerator {
         return new EntityData(bodySegments);
     }
 
-    private static EntityData.CubeSegment nextSegment(EntityData.CubeSegment current, Distribution xDistribution, Distribution yZDistribution) {
+    private static EntityData.CubeSegment nextSegment(EntityData.CubeSegment current, Distribution xDistribution,
+                                                      Distribution yZDistribution) {
         int dX = xDistribution.nextValue() - 3;
         int dY = yZDistribution.nextValue() - 3;
         int dZ = yZDistribution.nextValue() - 3;
+        int x = Math.max(current.x() + dX, ABSOLUTE_MIN_BODY_SIZE);
+        int y = Math.max(current.y() + dY, ABSOLUTE_MIN_BODY_SIZE);
+        int z = Math.max(current.z() + dZ, ABSOLUTE_MIN_BODY_SIZE);
 
-        return new EntityData.CubeSegment(Math.max(current.x() + dX, ABSOLUTE_MIN_BODY_SIZE),
-                Math.max(current.y() + dY, ABSOLUTE_MIN_BODY_SIZE),
-                Math.max(current.z() + dZ, ABSOLUTE_MIN_BODY_SIZE));
+        return new EntityData.CubeSegment(current.x0() + current.x(),
+                current.y0() + current.y() / 2.0F - y / 2.0F,
+                current.z0() + current.z() / 2.0F - z / 2.0F,
+                x, y, z);
     }
 
     private static RandomSource randomSource() {
