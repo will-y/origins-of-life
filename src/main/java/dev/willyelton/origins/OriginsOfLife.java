@@ -1,18 +1,26 @@
 package dev.willyelton.origins;
 
 import com.mojang.logging.LogUtils;
+import dev.willyelton.origins.common.DataComponents;
 import dev.willyelton.origins.common.entity.AquaticCreature;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.item.component.ItemLore;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -32,9 +40,13 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.slf4j.Logger;
 
+import java.util.List;
+
+import static dev.willyelton.origins.common.event.RegisterCauldronInteractionEvent.cleanFossil;
+
 @Mod(OriginsOfLife.MODID)
 public class OriginsOfLife {
-    public static final String MODID = "originsoflife";
+    public static final String MODID = "origins_of_life";
     public static final Logger LOGGER = LogUtils.getLogger();
 
     private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(OriginsOfLife.MODID);
@@ -42,6 +54,10 @@ public class OriginsOfLife {
     private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(Registries.ENTITY_TYPE, OriginsOfLife.MODID);
     private static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(Registries.FLUID, MODID);
     private static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(NeoForgeRegistries.FLUID_TYPES, MODID);
+    public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
+
+    // Blocks
+    public static final DeferredHolder<Block, Block> FOSSIL_BLOCK = BLOCKS.registerBlock("fossil_block", Block::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE));
 
     // Entities
     public static final DeferredHolder<EntityType<?>, EntityType<AquaticCreature>> AQUATIC_CREATURE = ENTITIES.register("aquatic_creature",
@@ -54,6 +70,10 @@ public class OriginsOfLife {
     // Items
     public static final DeferredItem<SpawnEggItem> AQUATIC_SPAWN_EGG = ITEMS.registerItem("aquatic_spawn_egg", properties ->
             new SpawnEggItem(properties.spawnEgg(AQUATIC_CREATURE.get())));
+    public static final DeferredItem<BlockItem> FOSSIL_BLOCK_ITEM = ITEMS.registerSimpleBlockItem(FOSSIL_BLOCK);
+    public static final DeferredItem<Item> FOSSIL = ITEMS.registerSimpleItem("fossil",
+            properties -> properties.component(net.minecraft.core.component.DataComponents.LORE, new ItemLore(
+                    List.of(Component.translatable("lore.origins_of_life.fossil_dirty")))));
 
     // Fluids
     public static final DeferredHolder<FluidType, FluidType> PRIMORDIAL_SOUP_TYPE = FLUID_TYPES.register(
@@ -100,12 +120,28 @@ public class OriginsOfLife {
                     .block(OriginsOfLife.PRIMORDIAL_SOUP_BLOCK)
                     .bucket(PRIMORDIAL_SOUP_BUCKET);
 
+    // Creative Tabs
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TAB = TABS.register("origins_of_life_tab", () ->
+            CreativeModeTab.builder()
+                    .title(Component.translatable("tab.origins_of_life"))
+                    .icon(() -> new ItemStack(AQUATIC_SPAWN_EGG.get()))
+                    .displayItems((_, output) -> {
+                        output.accept(AQUATIC_SPAWN_EGG);
+                        output.accept(FOSSIL_BLOCK_ITEM);
+                        output.accept(FOSSIL);
+                        output.accept(cleanFossil());
+                        output.accept(PRIMORDIAL_SOUP_BUCKET);
+                    })
+                    .build());
+
     public OriginsOfLife(IEventBus modEventBus, ModContainer modContainer) {
         ENTITIES.register(modEventBus);
         ITEMS.register(modEventBus);
         BLOCKS.register(modEventBus);
         FLUID_TYPES.register(modEventBus);
         FLUIDS.register(modEventBus);
+        TABS.register(modEventBus);
+        DataComponents.COMPONENTS.register(modEventBus);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
