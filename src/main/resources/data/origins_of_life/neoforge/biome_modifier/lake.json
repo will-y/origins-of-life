@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": ["origins_of_life:primordial_soup_lake"],
+  "step": "lakes"
+}

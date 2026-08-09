@@ -11,7 +11,6 @@
   - Stored in entity data
 - Attributes in entity data
 - Some behavior in entity data
-- Some way to get primordial soup
 
 
 ## Later
