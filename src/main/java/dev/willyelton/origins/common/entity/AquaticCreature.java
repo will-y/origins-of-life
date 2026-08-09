@@ -1,5 +1,6 @@
 package dev.willyelton.origins.common.entity;
 
+import dev.willyelton.origins.OriginsOfLife;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
@@ -21,7 +22,11 @@ import net.neoforged.neoforge.fluids.FluidType;
 
 public class AquaticCreature extends CreatureEntity {
     public AquaticCreature(EntityType<? extends AquaticCreature> type, Level level) {
-        super(type, level);
+        this(level, EntityDataGenerator.random());
+    }
+
+    public AquaticCreature(Level level, EntityData entityData) {
+        super(OriginsOfLife.AQUATIC_CREATURE.get(), level, entityData);
         this.setPathfindingMalus(PathType.WATER, 0.0F);
         this.moveControl = new AquaticCreatureMoveControl<>(this);
     }

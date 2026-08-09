@@ -21,11 +21,15 @@ public abstract class CreatureEntity extends PathfinderMob implements IEntityWit
 
     private EntityData entityData;
 
-    protected CreatureEntity(EntityType<? extends PathfinderMob> type, Level level) {
-        this.entityData = EntityDataGenerator.random();
+    protected CreatureEntity(EntityType<? extends PathfinderMob> type, Level level, EntityData entityData) {
+        this.entityData = entityData;
         super(type, level);
         // Use Entity Dimensions
         this.dimensions = createDimensions(entityData);
+    }
+
+    protected CreatureEntity(EntityType<? extends PathfinderMob> type, Level level) {
+        this(type, level, EntityDataGenerator.random());
     }
 
     public EntityData entityData() {

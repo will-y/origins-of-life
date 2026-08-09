@@ -3,12 +3,14 @@ package dev.willyelton.origins;
 import com.mojang.logging.LogUtils;
 import dev.willyelton.origins.common.DataComponents;
 import dev.willyelton.origins.common.entity.AquaticCreature;
+import dev.willyelton.origins.common.item.FossilItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Util;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.BlockItem;
@@ -61,7 +63,7 @@ public class OriginsOfLife {
 
     // Entities
     public static final DeferredHolder<EntityType<?>, EntityType<AquaticCreature>> AQUATIC_CREATURE = ENTITIES.register("aquatic_creature",
-            () -> EntityType.Builder.of(AquaticCreature::new, MobCategory.WATER_CREATURE)
+            () -> EntityType.Builder.of(((EntityType.EntityFactory<AquaticCreature>) AquaticCreature::new), MobCategory.WATER_CREATURE)
                     .sized(1, 10)
                     .eyeHeight(0.8F)
                     .updateInterval(20)
@@ -71,7 +73,7 @@ public class OriginsOfLife {
     public static final DeferredItem<SpawnEggItem> AQUATIC_SPAWN_EGG = ITEMS.registerItem("aquatic_spawn_egg", properties ->
             new SpawnEggItem(properties.spawnEgg(AQUATIC_CREATURE.get())));
     public static final DeferredItem<BlockItem> FOSSIL_BLOCK_ITEM = ITEMS.registerSimpleBlockItem(FOSSIL_BLOCK);
-    public static final DeferredItem<Item> FOSSIL = ITEMS.registerSimpleItem("fossil",
+    public static final DeferredItem<Item> FOSSIL = ITEMS.registerItem("fossil", FossilItem::new,
             properties -> properties.component(net.minecraft.core.component.DataComponents.LORE, new ItemLore(
                     List.of(Component.translatable("lore.origins_of_life.fossil_dirty")))));
 
