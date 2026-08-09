@@ -10,7 +10,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Util;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.BlockItem;
@@ -59,7 +58,14 @@ public class OriginsOfLife {
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
     // Blocks
-    public static final DeferredHolder<Block, Block> FOSSIL_BLOCK = BLOCKS.registerBlock("fossil_block", Block::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE));
+    public static final DeferredHolder<Block, Block> FOSSIL_BLOCK_DEEPSLATE = BLOCKS.registerBlock("fossil_block_deepslate", Block::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE));
+    public static final DeferredHolder<Block, Block> FOSSIL_BLOCK_SULFUR = BLOCKS.registerBlock("fossil_block_sulfur", Block::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE));
+    public static final DeferredHolder<Block, Block> FOSSIL_BLOCK_CLAY = BLOCKS.registerBlock("fossil_block_clay", Block::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE));
+
+    // Block Items
+    public static final DeferredItem<BlockItem> FOSSIL_BLOCK_ITEM_DEEPSLATE = ITEMS.registerSimpleBlockItem(FOSSIL_BLOCK_DEEPSLATE);
+    public static final DeferredItem<BlockItem> FOSSIL_BLOCK_ITEM_SULFUR = ITEMS.registerSimpleBlockItem(FOSSIL_BLOCK_SULFUR);
+    public static final DeferredItem<BlockItem> FOSSIL_BLOCK_ITEM_CLAY = ITEMS.registerSimpleBlockItem(FOSSIL_BLOCK_CLAY);
 
     // Entities
     public static final DeferredHolder<EntityType<?>, EntityType<AquaticCreature>> AQUATIC_CREATURE = ENTITIES.register("aquatic_creature",
@@ -72,7 +78,6 @@ public class OriginsOfLife {
     // Items
     public static final DeferredItem<SpawnEggItem> AQUATIC_SPAWN_EGG = ITEMS.registerItem("aquatic_spawn_egg", properties ->
             new SpawnEggItem(properties.spawnEgg(AQUATIC_CREATURE.get())));
-    public static final DeferredItem<BlockItem> FOSSIL_BLOCK_ITEM = ITEMS.registerSimpleBlockItem(FOSSIL_BLOCK);
     public static final DeferredItem<Item> FOSSIL = ITEMS.registerItem("fossil", FossilItem::new,
             properties -> properties.component(net.minecraft.core.component.DataComponents.LORE, new ItemLore(
                     List.of(Component.translatable("lore.origins_of_life.fossil_dirty")))));
@@ -129,7 +134,9 @@ public class OriginsOfLife {
                     .icon(() -> new ItemStack(AQUATIC_SPAWN_EGG.get()))
                     .displayItems((_, output) -> {
                         output.accept(AQUATIC_SPAWN_EGG);
-                        output.accept(FOSSIL_BLOCK_ITEM);
+                        output.accept(FOSSIL_BLOCK_ITEM_DEEPSLATE);
+                        output.accept(FOSSIL_BLOCK_ITEM_SULFUR);
+                        output.accept(FOSSIL_BLOCK_ITEM_CLAY);
                         output.accept(FOSSIL);
                         output.accept(cleanFossil());
                         output.accept(PRIMORDIAL_SOUP_BUCKET);

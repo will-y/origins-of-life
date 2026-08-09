@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "origins_of_life:block/fossil_block_clay"
+  }
+}

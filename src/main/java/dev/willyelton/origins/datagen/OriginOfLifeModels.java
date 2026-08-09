@@ -6,7 +6,6 @@ import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.model.ItemModelUtils;
-import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.renderer.item.ConditionalItemModel;
 import net.minecraft.client.renderer.item.ItemModel;
@@ -26,7 +25,9 @@ public class OriginOfLifeModels extends ModelProvider {
     @Override
     protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
         blockModels.createNonTemplateModelBlock(OriginsOfLife.PRIMORDIAL_SOUP_BLOCK.get());
-        blockModels.createTrivialCube(OriginsOfLife.FOSSIL_BLOCK.get());
+        blockModels.createTrivialCube(OriginsOfLife.FOSSIL_BLOCK_DEEPSLATE.get());
+        blockModels.createTrivialCube(OriginsOfLife.FOSSIL_BLOCK_SULFUR.get());
+        blockModels.createTrivialCube(OriginsOfLife.FOSSIL_BLOCK_CLAY.get());
 
         itemModels.itemModelOutput.accept(OriginsOfLife.PRIMORDIAL_SOUP_BUCKET.get(), new DynamicFluidContainerModel.Unbaked(
                 new DynamicFluidContainerModel.Textures(

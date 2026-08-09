@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": ["origins_of_life:deepslate_fossil", "origins_of_life:clay_fossil", "origins_of_life:sulfur_fossil"],
+  "step": "underground_ores"
+}

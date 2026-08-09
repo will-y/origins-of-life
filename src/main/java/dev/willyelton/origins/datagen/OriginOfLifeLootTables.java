@@ -16,7 +16,9 @@ public class OriginOfLifeLootTables extends VanillaBlockLoot {
 
     @Override
     protected void generate() {
-        add(OriginsOfLife.FOSSIL_BLOCK.get(), createOreDrop(OriginsOfLife.FOSSIL_BLOCK.get(), OriginsOfLife.FOSSIL.get()));
+        add(OriginsOfLife.FOSSIL_BLOCK_DEEPSLATE.get(), createOreDrop(OriginsOfLife.FOSSIL_BLOCK_DEEPSLATE.get(), OriginsOfLife.FOSSIL.get()));
+        add(OriginsOfLife.FOSSIL_BLOCK_SULFUR.get(), createOreDrop(OriginsOfLife.FOSSIL_BLOCK_SULFUR.get(), OriginsOfLife.FOSSIL.get()));
+        add(OriginsOfLife.FOSSIL_BLOCK_CLAY.get(), createOreDrop(OriginsOfLife.FOSSIL_BLOCK_CLAY.get(), OriginsOfLife.FOSSIL.get()));
     }
 
     @Override

@@ -25,7 +25,7 @@
                   }
                 }
               ],
-              "name": "origins_of_life:fossil_block"
+              "name": "origins_of_life:fossil_block_clay"
             },
             {
               "type": "minecraft:item",
@@ -47,5 +47,5 @@
       "rolls": 1.0
     }
   ],
-  "random_sequence": "origins_of_life:blocks/fossil_block"
+  "random_sequence": "origins_of_life:blocks/fossil_block_clay"
 }
