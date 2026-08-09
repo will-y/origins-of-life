@@ -22,7 +22,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 
 public class AquaticCreature extends CreatureEntity {
     public AquaticCreature(EntityType<? extends AquaticCreature> type, Level level) {
-        this(level, EntityDataGenerator.random());
+        this(level, EntityDataGenerator.random(level));
     }
 
     public AquaticCreature(Level level, EntityData entityData) {

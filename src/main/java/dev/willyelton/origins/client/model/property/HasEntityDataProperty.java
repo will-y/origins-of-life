@@ -9,8 +9,8 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
-public record FossilProperty() implements ConditionalItemModelProperty {
-    public static final MapCodec<FossilProperty> MAP_CODEC = MapCodec.unit(FossilProperty::new);
+public record HasEntityDataProperty() implements ConditionalItemModelProperty {
+    public static final MapCodec<HasEntityDataProperty> MAP_CODEC = MapCodec.unit(HasEntityDataProperty::new);
 
     @Override
     public MapCodec<? extends ConditionalItemModelProperty> type() {

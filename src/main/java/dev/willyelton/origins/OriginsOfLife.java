@@ -3,6 +3,7 @@ package dev.willyelton.origins;
 import com.mojang.logging.LogUtils;
 import dev.willyelton.origins.common.DataComponents;
 import dev.willyelton.origins.common.entity.AquaticCreature;
+import dev.willyelton.origins.common.item.CageItem;
 import dev.willyelton.origins.common.item.FossilItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -81,6 +82,7 @@ public class OriginsOfLife {
     public static final DeferredItem<Item> FOSSIL = ITEMS.registerItem("fossil", FossilItem::new,
             properties -> properties.component(net.minecraft.core.component.DataComponents.LORE, new ItemLore(
                     List.of(Component.translatable("lore.origins_of_life.fossil_dirty")))));
+    public static final DeferredItem<CageItem> CAGE = ITEMS.registerItem("cage", CageItem::new);
 
     // Fluids
     public static final DeferredHolder<FluidType, FluidType> PRIMORDIAL_SOUP_TYPE = FLUID_TYPES.register(
@@ -132,14 +134,15 @@ public class OriginsOfLife {
             CreativeModeTab.builder()
                     .title(Component.translatable("tab.origins_of_life"))
                     .icon(() -> new ItemStack(AQUATIC_SPAWN_EGG.get()))
-                    .displayItems((_, output) -> {
+                    .displayItems((params, output) -> {
                         output.accept(AQUATIC_SPAWN_EGG);
                         output.accept(FOSSIL_BLOCK_ITEM_DEEPSLATE);
                         output.accept(FOSSIL_BLOCK_ITEM_SULFUR);
                         output.accept(FOSSIL_BLOCK_ITEM_CLAY);
                         output.accept(FOSSIL);
-                        output.accept(cleanFossil());
+                        output.accept(cleanFossil(null));
                         output.accept(PRIMORDIAL_SOUP_BUCKET);
+                        output.accept(CAGE);
                     })
                     .build());
 

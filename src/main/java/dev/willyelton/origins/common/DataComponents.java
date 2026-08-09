@@ -16,6 +16,7 @@ public class DataComponents {
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<EntityData>> ENTITY_DATA = register("entity_data", EntityData.CODEC, EntityData.STREAM_CODEC);
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> FOSSIL_TRANSFORM_COUNTER = register("fossil_transform_counter", Codec.INT, ByteBufCodecs.INT);
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> INSERT_TIME = register("insert_time", Codec.LONG, ByteBufCodecs.LONG);
 
     private static <T> DeferredHolder<DataComponentType<?>, DataComponentType<T>> register(String key, Codec<T> codec, StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec) {
         DeferredHolder<DataComponentType<?>, DataComponentType<T>> result;

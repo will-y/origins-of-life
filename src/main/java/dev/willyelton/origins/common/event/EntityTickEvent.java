@@ -30,7 +30,7 @@ public class EntityTickEvent {
 
             if (!level.isClientSide()) {
                 if (progress >= Config.FOSSIL_TRANSFORM_TICKS.get()) {
-                    AquaticCreature creature = new AquaticCreature(level, stack.getOrDefault(DataComponents.ENTITY_DATA, EntityDataGenerator.random()));
+                    AquaticCreature creature = new AquaticCreature(level, stack.getOrDefault(DataComponents.ENTITY_DATA, EntityDataGenerator.random(level)));
                     creature.setPos(entity.position());
                     level.addFreshEntity(creature);
                     entity.discard();

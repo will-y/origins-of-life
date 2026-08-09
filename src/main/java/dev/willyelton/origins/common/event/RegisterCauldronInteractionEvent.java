@@ -14,6 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.component.ItemLore;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -27,7 +28,7 @@ public class RegisterCauldronInteractionEvent {
         event.register(Identifier.parse("water"), OriginsOfLife.FOSSIL.get(), (state, level, pos, player, hand, stack) -> {
             if (!level.isClientSide() && !stack.has(DataComponents.ENTITY_DATA)) {
                 Item usedItem = stack.getItem();
-                player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, cleanFossil()));
+                player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, cleanFossil(level)));
                 player.awardStat(Stats.USE_CAULDRON);
                 player.awardStat(Stats.ITEM_USED.get(usedItem));
                 LayeredCauldronBlock.lowerFillLevel(state, level, pos);
@@ -38,9 +39,9 @@ public class RegisterCauldronInteractionEvent {
         });
     }
 
-    public static ItemStack cleanFossil() {
+    public static ItemStack cleanFossil(Level level) {
         DataComponentPatch patch = DataComponentPatch.builder()
-                .set(DataComponents.ENTITY_DATA.get(), EntityDataGenerator.random())
+                .set(DataComponents.ENTITY_DATA.get(), EntityDataGenerator.random(level))
                 .set(net.minecraft.core.component.DataComponents.ITEM_NAME, Component.translatable("item.origins_of_life.fossil_clean"))
                 .set(net.minecraft.core.component.DataComponents.LORE, new ItemLore(List.of(Component.translatable("lore.origins_of_life.fossil_clean"))))
                 .build();

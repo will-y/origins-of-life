@@ -20,11 +20,11 @@ public class EntityDataGenerator {
     private static final int[] BODY_NEXT_Y_Z_SIZE_WEIGHTS = new int[]{60, 70, 80, 90, 10};
 
     public static EntityData empty() {
-        return new EntityData(EntityData.CubeSegment.randomSquare(randomSource(), 1, 5), new ArrayList<>());
+        return new EntityData(new EntityData.CubeSegment(0, 0, 0, 1, 1, 1), new ArrayList<>());
     }
 
-    public static EntityData random() {
-        RandomSource rand = randomSource();
+    public static EntityData random(Level level) {
+        RandomSource rand = randomSource(level);
         Distribution bodyCountDistribution = new WeightedDistribution(rand, BODY_COUNT_WEIGHTS);
         Distribution bodyXSizeDistribution = new WeightedDistribution(rand, BODY_NEXT_X_SIZE_WEIGHTS);
         Distribution bodyYZSizeDistribution = new WeightedDistribution(rand, BODY_NEXT_Y_Z_SIZE_WEIGHTS);
@@ -59,9 +59,7 @@ public class EntityDataGenerator {
                 x, y, z);
     }
 
-    private static RandomSource randomSource() {
-        Level level = Minecraft.getInstance().level;
-
+    private static RandomSource randomSource(Level level) {
         if (level != null) {
             return level.getRandom();
         }

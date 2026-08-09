@@ -3,10 +3,15 @@
   "item.origins_of_life.fossil_clean": "Clean Fossil",
   "item.origins_of_life.aquatic_spawn_egg": "Aquatic Creature Spawn Egg",
   "item.origins_of_life.primordial_soup_bucket": "Primordial Soup Bucket",
+  "item.origins_of_life.cage": "Cage",
   "block.origins_of_life.fossil_block_deepslate": "Fossil Cluster",
   "block.origins_of_life.fossil_block_sulfur": "Fossil Cluster",
   "tab.origins_of_life": "Origins of Life",
   "lore.origins_of_life.fossil_dirty": "Clean off in a cauldron!",
   "lore.origins_of_life.fossil_clean": "Try throwing in some primordial soup!",
-  "tooltip.origins_of_life.fossil": "Fossil is %s%% transformed"
+  "tooltip.origins_of_life.fossil": "Fossil is %s%% transformed",
+  "tooltip.origins_of_life.cage_full": "Cage already has a mob in it!",
+  "tooltip.origins_of_life.cage_not_owned": "Cannot pick up an animal you don't own!",
+  "tooltip.origins_of_life.cage_blacklist": "This entity cannot be picked up!",
+  "tooltip.origins_of_life.cage_contains": "Contains: %s"
 }

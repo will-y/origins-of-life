@@ -19,5 +19,9 @@ public class Config {
             .comment("Ticks that it takes to transform a fossil into a creature")
             .defineInRange("fossil_transform_ticks", 400, 1, 10000);
 
+    public static final ModConfigSpec.BooleanValue CAGE_PICKUP_OTHER_ENTITIES = BUILDER
+            .comment("Allows the cage item to pick up all mobs")
+            .define("cage_pickup_other_entities", false);
+
     static final ModConfigSpec SPEC = BUILDER.build();
 }
