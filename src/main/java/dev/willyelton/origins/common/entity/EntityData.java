@@ -131,6 +131,10 @@ public final class EntityData {
             this(x0, y0, z0, x, y, z, 0, 0, 0, "");
         }
 
+        public CubeSegment(float x0, float y0, float z0, int x, int y, int z, String name) {
+            this(x0, y0, z0, x, y, z, 0, 0, 0, name);
+        }
+
         public CubeSegment withOffset(float x0, float y0, float z0) {
             return new CubeSegment(x0, y0, z0, x, y, z);
         }

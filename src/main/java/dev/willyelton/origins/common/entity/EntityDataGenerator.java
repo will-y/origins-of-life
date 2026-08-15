@@ -81,11 +81,30 @@ public class EntityDataGenerator {
         if (rand.nextFloat() > 0.3) {
             float zRot = (rand.nextInt(20, 90)) * Mth.PI / 180.0F;
             for (int i = 0; i < bodySegments.size(); i++) {
-                EntityData.CubeSegment segment = bodySegments.get(i);
-                int y = rand.nextInt(1, segment.x() * 2 / 3 + 1);
-                int z = rand.nextInt(1, segment.z() / 3 + 1);
-                int x = rand.nextInt(Math.min(y, z), Math.max(y, z) + 1);
-                decorations.put(i, List.of(new EntityData.CubeSegment(segment.x0() + segment.x() / 2.0F - x / 2.0F + Mth.sin(zRot) * x, segment.y0() - Mth.cos(zRot) * Mth.sqrt(y * y + z * z), segment.z0() + segment.z() / 2.0F - z / 2.0F, x, y, z, 0, 0, zRot, "top_fin")));
+                if (rand.nextFloat() > 0.1) {
+                    EntityData.CubeSegment segment = bodySegments.get(i);
+                    int y = rand.nextInt(1, segment.x() * 2 / 3 + 1);
+                    int z = rand.nextInt(1, segment.z() / 3 + 1);
+                    int x = rand.nextInt(Math.min(y, z), Math.max(y, z) + 1);
+                    decorations.computeIfAbsent(i, ArrayList::new).add(new EntityData.CubeSegment(segment.x0() + segment.x() / 2.0F - x / 2.0F + Mth.sin(zRot) * x, segment.y0() - Mth.cos(zRot) * Mth.sqrt(y * y + z * z), segment.z0() + segment.z() / 2.0F - z / 2.0F, x, y, z, 0, 0, zRot, "top_fin"));
+                }
+            }
+        }
+
+        // Side fins
+        if (rand.nextFloat() > 0.4) {
+            for (int i = 0; i < bodySegments.size(); i++) {
+                if (rand.nextFloat() > 0.3) {
+                    EntityData.CubeSegment segment = bodySegments.get(i);
+                    int x = Math.max(rand.nextInt(segment.x() / 4, segment.x() * 3 / 4), 1);
+                    int y = rand.nextInt(1, 4);
+                    int z = rand.nextInt(Math.min(3, segment.z() / 3), Math.max(segment.z(), 6));
+
+                    float x0 = segment.x0() + segment.x() / 2.0F - x / 2.0F;
+                    float y0 = segment.y0() + segment.y() / 2.0F - y / 2.0F;
+                    decorations.computeIfAbsent(i, ArrayList::new).add(new EntityData.CubeSegment(x0 + x, y0, segment.z0(), x, y, z, 0, Mth.PI, 0, "left_fin"));
+                    decorations.computeIfAbsent(i, ArrayList::new).add(new EntityData.CubeSegment(x0, y0, segment.z0() + segment.z(), x, y, z, "right_fin"));
+                }
             }
         }
     }

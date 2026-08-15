@@ -2,9 +2,9 @@
 ## MVP
 - Hitboxes (y is messed up)
 - Textures
-- Fins (random angle and placement)
-  - Call them decorations
-  - Also add horns
+- Decorations
+  - horns?
+  - nose
   - And tails?
 - Head
   - Add different head shapes

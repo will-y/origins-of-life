@@ -5,6 +5,7 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,12 +16,17 @@ public class CreatureModel extends EntityModel<CreatureRenderState> {
     public static final ModelLayerLocation BODY_LOCATION = new ModelLayerLocation(rl("main"), "main");
 
     private final ModelPart[] bodySegments;
+    private @Nullable ModelPart head = null;
 
     public CreatureModel(ModelPart root) {
         super(root);
 
         if (root.hasChild("main")) {
             ModelPart main = root.getChild("main");
+
+            if (main.hasChild("head")) {
+                this.head = main.getChild("head");
+            }
 
             if (main.hasChild("body")) {
                 List<ModelPart> bodyParts = new ArrayList<>();
@@ -54,7 +60,30 @@ public class CreatureModel extends EntityModel<CreatureRenderState> {
 
         for (int i = 0; i < this.bodySegments.length; i++) {
             ModelPart part = this.bodySegments[i];
+            // Body rotation
             part.yRot = -amplitudeMultiplier * 0.25F * Mth.sin(angleMultiplier * 0.6F * state.ageInTicks + (Math.PI / 8.0F) * (i + 1)) * (i + 1) / 8.0F;
+
+            // Side fins
+            animateSideFins(part, amplitudeMultiplier, angleMultiplier, state, i);
         }
+
+        // Head animations
+        if (this.head != null) {
+            animateSideFins(this.head, amplitudeMultiplier, angleMultiplier, state, -2);
+        }
+    }
+
+    private void animateSideFins(ModelPart part, float amplitudeMultiplier, float angleMultiplier, CreatureRenderState state, int i) {
+        if (part.hasChild("left_fin")) {
+            animateSideFin(part.getChild("left_fin"), amplitudeMultiplier, angleMultiplier, state, i);
+        }
+
+        if (part.hasChild("right_fin")) {
+            animateSideFin(part.getChild("right_fin"), amplitudeMultiplier, angleMultiplier, state, i);
+        }
+    }
+
+    private void animateSideFin(ModelPart part, float amplitudeMultiplier, float angleMultiplier, CreatureRenderState state, int i) {
+        part.xRot = -amplitudeMultiplier * 0.45F * Mth.sin(angleMultiplier * 0.3F * state.ageInTicks + (Math.PI / 4.0F) * (i + 1));
     }
 }
