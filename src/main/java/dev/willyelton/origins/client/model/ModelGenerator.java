@@ -30,12 +30,14 @@ public class ModelGenerator {
 
     private static void generateBody(EntityData entityData, PartDefinition partDefinition) {
         PartDefinition main = partDefinition.addOrReplaceChild("main", new CubeListBuilder(), PartPose.rotation(0, -Mth.PI / 2.0F, 0));
+        // Head + body
+        List<PartDefinition> allBodyParts = new ArrayList<>();
 
         // Head
         CubeListBuilder headBuilder = new CubeListBuilder();
         generateCubes(List.of(headBuilder), List.of(entityData.head()), entityData.sizes());
 
-        main.addOrReplaceChild("head", headBuilder, PartPose.rotation(0, 0, 0));
+        allBodyParts.add(main.addOrReplaceChild("head", headBuilder, PartPose.rotation(0, 0, 0)));
 
         // Body
         List<EntityData.CubeSegment> bodySegments = entityData.bodySegments();
@@ -45,10 +47,28 @@ public class ModelGenerator {
         PartDefinition body = main.addOrReplaceChild("body", firstBodyBuilder,
                 PartPose.offsetAndRotation(0,0, 0,
                         0, 0, 0));
+        allBodyParts.add(body);
 
         for (CubeListBuilder cubeListBuilder : bodyBuilders) {
             body = body.addOrReplaceChild("body_segment", cubeListBuilder, PartPose.ZERO);
+            allBodyParts.add(body);
         }
+
+        // Decorations
+        entityData.decorations().forEach((key, val) -> val.forEach(cubeSegment -> {
+            CubeListBuilder builder = CubeListBuilder.create()
+                    .texOffs(5, 5)
+                    .addBox(0, 0,0, cubeSegment.x(), cubeSegment.y(), cubeSegment.z());
+            if (key >= allBodyParts.size()) {
+                throw new IllegalArgumentException("Invalid decoration index: " + key + " for " + allBodyParts.size() + " body segments");
+            }
+
+            if (cubeSegment.name() == null || cubeSegment.name().isEmpty()) {
+                throw new IllegalArgumentException("Decoration must have a name");
+            }
+
+            allBodyParts.get(key).addOrReplaceChild(cubeSegment.name(), builder, PartPose.offsetAndRotation(cubeSegment.x0() - entityData.sizes().centerX(), cubeSegment.y0(), cubeSegment.z0() - entityData.sizes().centerZ(), cubeSegment.xRot(), cubeSegment.yRot(), cubeSegment.zRot()));
+        }));
     }
 
     private static void generateCubes(List<CubeListBuilder> builders, List<EntityData.CubeSegment> cubeSegments, EntityData.Sizes sizes) {
@@ -67,7 +87,6 @@ public class ModelGenerator {
     public static ModelPart defaultModel() {
         return DEFAULT_MODEL;
     }
-
 
     private static final ModelPart DEFAULT_MODEL;
 

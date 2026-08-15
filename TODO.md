@@ -3,6 +3,9 @@
 - Hitboxes (y is messed up)
 - Textures
 - Fins (random angle and placement)
+  - Call them decorations
+  - Also add horns
+  - And tails?
 - Head
   - Add different head shapes
   - Change body count offset by one so it is more common to just have a head again?

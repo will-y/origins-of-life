@@ -8,30 +8,39 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.RandomSource;
 import org.jspecify.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 /// Stores all attributes of an entity (cannot change)
 public final class EntityData {
+    public static final Codec<Integer> STRINT = Codec.STRING.xmap(Integer::parseInt, String::valueOf);
+
     public static final Codec<EntityData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             CubeSegment.CODEC.fieldOf("head").forGetter(EntityData::head),
-            CubeSegment.CODEC.listOf().fieldOf("bodySegments").forGetter(EntityData::bodySegments)
+            CubeSegment.CODEC.listOf().fieldOf("bodySegments").forGetter(EntityData::bodySegments),
+            Codec.unboundedMap(STRINT, CubeSegment.CODEC.listOf()).fieldOf("decorations").forGetter(EntityData::decorations)
     ).apply(instance, EntityData::new));
+
     public static final StreamCodec<RegistryFriendlyByteBuf, EntityData> STREAM_CODEC = StreamCodec.composite(
             CubeSegment.STREAM_CODEC, EntityData::head,
             CubeSegment.STREAM_CODEC.apply(ByteBufCodecs.list()), EntityData::bodySegments,
+            ByteBufCodecs.map(HashMap::new, ByteBufCodecs.INT, CubeSegment.STREAM_CODEC.apply(ByteBufCodecs.list())), EntityData::decorations,
             EntityData::new);
 
     private final CubeSegment head;
     private final List<CubeSegment> bodySegments;
+    private final Map<Integer, List<CubeSegment>> decorations;
     private @Nullable List<CubeSegment> allSegments;
 
     private @Nullable Sizes sizes = null;
 
-    public EntityData(CubeSegment head, List<CubeSegment> bodySegments) {
+    public EntityData(CubeSegment head, List<CubeSegment> bodySegments, Map<Integer, List<CubeSegment>> decorations) {
         this.head = head;
         this.bodySegments = bodySegments;
+        this.decorations = decorations;
     }
 
     public CubeSegment head() {
@@ -40,6 +49,10 @@ public final class EntityData {
 
     public List<CubeSegment> bodySegments() {
         return bodySegments;
+    }
+
+    public Map<Integer, List<CubeSegment>> decorations() {
+        return decorations;
     }
 
     public List<CubeSegment> allSegments() {
@@ -83,14 +96,18 @@ public final class EntityData {
                 "sizes=" + sizes + ']';
     }
 
-    public record CubeSegment(float x0, float y0, float z0, int x, int y, int z) {
+    public record CubeSegment(float x0, float y0, float z0, int x, int y, int z, float xRot, float yRot, float zRot, String name) {
         public static final Codec<CubeSegment> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.FLOAT.fieldOf("x0").forGetter(CubeSegment::x0),
                 Codec.FLOAT.fieldOf("y0").forGetter(CubeSegment::y0),
                 Codec.FLOAT.fieldOf("z0").forGetter(CubeSegment::z0),
                 Codec.INT.fieldOf("x").forGetter(CubeSegment::x),
                 Codec.INT.fieldOf("y").forGetter(CubeSegment::y),
-                Codec.INT.fieldOf("z").forGetter(CubeSegment::z)
+                Codec.INT.fieldOf("z").forGetter(CubeSegment::z),
+                Codec.FLOAT.fieldOf("xRot").forGetter(CubeSegment::xRot),
+                Codec.FLOAT.fieldOf("yRot").forGetter(CubeSegment::yRot),
+                Codec.FLOAT.fieldOf("zRot").forGetter(CubeSegment::zRot),
+                Codec.STRING.fieldOf("name").forGetter(CubeSegment::name)
         ).apply(instance, CubeSegment::new));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, CubeSegment> STREAM_CODEC = StreamCodec.composite(
@@ -100,10 +117,18 @@ public final class EntityData {
                 ByteBufCodecs.INT, CubeSegment::x,
                 ByteBufCodecs.INT, CubeSegment::y,
                 ByteBufCodecs.INT, CubeSegment::z,
+                ByteBufCodecs.FLOAT, CubeSegment::xRot,
+                ByteBufCodecs.FLOAT, CubeSegment::yRot,
+                ByteBufCodecs.FLOAT, CubeSegment::zRot,
+                ByteBufCodecs.STRING_UTF8, CubeSegment::name,
                 CubeSegment::new);
 
         public CubeSegment(int x, int y, int z) {
             this(0, 0, 0, x, y, z);
+        }
+
+        public CubeSegment(float x0, float y0, float z0, int x, int y, int z) {
+            this(x0, y0, z0, x, y, z, 0, 0, 0, "");
         }
 
         public CubeSegment withOffset(float x0, float y0, float z0) {
