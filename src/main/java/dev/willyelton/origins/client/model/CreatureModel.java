@@ -71,6 +71,18 @@ public class CreatureModel extends EntityModel<CreatureRenderState> {
         if (this.head != null) {
             animateSideFins(this.head, amplitudeMultiplier, angleMultiplier, state, -2);
         }
+
+        // Tail animations
+        if (this.bodySegments.length > 0) {
+            animateTail(this.bodySegments[this.bodySegments.length - 1], amplitudeMultiplier, angleMultiplier / 2.0F, state);
+        }
+    }
+
+    private void animateTail(ModelPart part, float amplitudeMultiplier, float angleMultiplier, CreatureRenderState state) {
+        if (part.hasChild("tail")) {
+            ModelPart tail = part.getChild("tail");
+            tail.zRot = -amplitudeMultiplier * 0.45F * Mth.sin(angleMultiplier * 0.3F * state.ageInTicks);
+        }
     }
 
     private void animateSideFins(ModelPart part, float amplitudeMultiplier, float angleMultiplier, CreatureRenderState state, int i) {

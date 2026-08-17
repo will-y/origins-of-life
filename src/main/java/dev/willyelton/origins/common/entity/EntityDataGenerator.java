@@ -51,6 +51,9 @@ public class EntityDataGenerator {
         allBodySegments.addAll(bodySegments);
         generateFins(rand, allBodySegments, decorations);
         generateHeadFeatures(rand, head, decorations);
+        if (!bodySegments.isEmpty()) {
+            generateTailFeatures(rand, bodySegments.getLast(), bodySegments.size(), decorations);
+        }
 
         return new EntityData(head, bodySegments, decorations);
     }
@@ -124,5 +127,27 @@ public class EntityDataGenerator {
 
             decorations.computeIfAbsent(0, ArrayList::new).add(new EntityData.CubeSegment(head.x0() - x, y0, head.z0() + head.z() / 2.0F - z / 2.0F, x, y, z, "nose"));
         }
+    }
+
+    private static void generateTailFeatures(RandomSource rand, EntityData.CubeSegment lastBodySegment, int lastBodySegmentIndex, Map<Integer, List<EntityData.CubeSegment>> decorations) {
+        if (rand.nextFloat() > 0.6) {
+            // Flat tail
+            IntegerNormalDistribution tailXDistribution = new IntegerNormalDistribution(rand, lastBodySegment.x(), lastBodySegment.x() / 2.0F);
+            IntegerNormalDistribution tailYDistribution = new IntegerNormalDistribution(rand, 2, 1);
+            IntegerNormalDistribution tailZDistribution = new IntegerNormalDistribution(rand, lastBodySegment.z(), lastBodySegment.z() / 2.0F);
+
+            int x = Math.max(tailXDistribution.nextValue(), 3);
+            int y = Mth.clamp(tailYDistribution.nextValue(), 1, lastBodySegment.y());
+            int z = Mth.clamp(tailZDistribution.nextValue(), 1, lastBodySegment.z() * 2);
+
+            decorations.computeIfAbsent(lastBodySegmentIndex, ArrayList::new).add(new EntityData.CubeSegment(
+                    lastBodySegment.x0() + lastBodySegment.x(),
+                    lastBodySegment.y0() + lastBodySegment.y() / 2.0F - y / 2.0F,
+                    lastBodySegment.z0() + lastBodySegment.z() / 2.0F -  z / 2.0F,
+                    x, y, z, "tail"));
+        }
+
+        // 2 Pronged Tail
+        // TODO
     }
 }
