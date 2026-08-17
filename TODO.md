@@ -6,6 +6,7 @@
   - horns?
   - nose
   - And tails?
+    - 2 prong angled and flat like dolphin
 - Head
   - Add different head shapes
   - Change body count offset by one so it is more common to just have a head again?

@@ -1,8 +1,8 @@
 package dev.willyelton.origins.common.entity;
 
 import dev.willyelton.origins.util.random.Distribution;
+import dev.willyelton.origins.util.random.IntegerNormalDistribution;
 import dev.willyelton.origins.util.random.WeightedDistribution;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// TODO: Put all probabilities in the config
 public class EntityDataGenerator {
     private static final int MAX_BASE_BODY_SIZE = 25;
     private static final int MIN_BASE_BODY_SIZE = 5;
@@ -28,9 +29,9 @@ public class EntityDataGenerator {
 
     public static EntityData random(Level level) {
         RandomSource rand = randomSource(level);
-        Distribution bodyCountDistribution = new WeightedDistribution(rand, BODY_COUNT_WEIGHTS);
-        Distribution bodyXSizeDistribution = new WeightedDistribution(rand, BODY_NEXT_X_SIZE_WEIGHTS);
-        Distribution bodyYZSizeDistribution = new WeightedDistribution(rand, BODY_NEXT_Y_Z_SIZE_WEIGHTS);
+        Distribution<Integer> bodyCountDistribution = new WeightedDistribution(rand, BODY_COUNT_WEIGHTS);
+        Distribution<Integer> bodyXSizeDistribution = new WeightedDistribution(rand, BODY_NEXT_X_SIZE_WEIGHTS);
+        Distribution<Integer> bodyYZSizeDistribution = new WeightedDistribution(rand, BODY_NEXT_Y_Z_SIZE_WEIGHTS);
 
         int bodySegmentCount = bodyCountDistribution.nextValue();
 
@@ -49,12 +50,13 @@ public class EntityDataGenerator {
         allBodySegments.add(head);
         allBodySegments.addAll(bodySegments);
         generateFins(rand, allBodySegments, decorations);
+        generateHeadFeatures(rand, head, decorations);
 
         return new EntityData(head, bodySegments, decorations);
     }
 
-    private static EntityData.CubeSegment nextSegment(EntityData.CubeSegment current, Distribution xDistribution,
-                                                      Distribution yZDistribution) {
+    private static EntityData.CubeSegment nextSegment(EntityData.CubeSegment current, Distribution<Integer> xDistribution,
+                                                      Distribution<Integer> yZDistribution) {
         int dX = xDistribution.nextValue() - 3;
         int dY = yZDistribution.nextValue() - 3;
         int dZ = yZDistribution.nextValue() - 3;
@@ -106,6 +108,21 @@ public class EntityDataGenerator {
                     decorations.computeIfAbsent(i, ArrayList::new).add(new EntityData.CubeSegment(x0, y0, segment.z0() + segment.z(), x, y, z, "right_fin"));
                 }
             }
+        }
+    }
+
+    private static void generateHeadFeatures(RandomSource rand, EntityData.CubeSegment head, Map<Integer, List<EntityData.CubeSegment>> decorations) {
+        if  (rand.nextFloat() > 0.3) {
+            IntegerNormalDistribution noseXDistribution = new IntegerNormalDistribution(rand, 4, 3);
+            IntegerNormalDistribution noseYZDistribution = new IntegerNormalDistribution(rand, 3, 4);
+            // Nose
+            int x = Mth.clamp(noseXDistribution.nextValue(), 1, head.x());
+            int y = Mth.clamp(noseYZDistribution.nextValue(), 1, head.y() / 2);
+            int z = Mth.clamp(noseYZDistribution.nextValue(), 1, head.z() / 2);
+            float yOffset = rand.nextFloat() * (head.y() / 2.0F - y / 2.0F) + head.y() / 2.0F - y / 2.0F;
+            float y0 = head.y0() + yOffset;
+
+            decorations.computeIfAbsent(0, ArrayList::new).add(new EntityData.CubeSegment(head.x0() - x, y0, head.z0() + head.z() / 2.0F - z / 2.0F, x, y, z, "nose"));
         }
     }
 }
