@@ -2,7 +2,7 @@ package dev.willyelton.origins.common;
 
 import com.mojang.serialization.Codec;
 import dev.willyelton.origins.OriginsOfLife;
-import dev.willyelton.origins.common.entity.EntityData;
+import dev.willyelton.origins.common.entity.data.EntityData;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;

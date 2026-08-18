@@ -1,7 +1,8 @@
-package dev.willyelton.origins.common.entity;
+package dev.willyelton.origins.common.entity.data;
 
 import dev.willyelton.origins.util.random.Distribution;
 import dev.willyelton.origins.util.random.IntegerNormalDistribution;
+import dev.willyelton.origins.util.random.NormalDistribution;
 import dev.willyelton.origins.util.random.WeightedDistribution;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -24,7 +25,7 @@ public class EntityDataGenerator {
     private static final int[] BODY_NEXT_Y_Z_SIZE_WEIGHTS = new int[]{60, 70, 80, 90, 10};
 
     public static EntityData empty() {
-        return new EntityData(new EntityData.CubeSegment(0, 0, 0, 1, 1, 1), new ArrayList<>(), new HashMap<>());
+        return new EntityData(new EntityData.CubeSegment(0, 0, 0, 1, 1, 1), new ArrayList<>(), new HashMap<>(), new HashMap<>());
     }
 
     public static EntityData random(Level level) {
@@ -55,7 +56,7 @@ public class EntityDataGenerator {
             generateTailFeatures(rand, bodySegments.getLast(), bodySegments.size(), decorations);
         }
 
-        return new EntityData(head, bodySegments, decorations);
+        return new EntityData(head, bodySegments, decorations, generateAnimationData(rand));
     }
 
     private static EntityData.CubeSegment nextSegment(EntityData.CubeSegment current, Distribution<Integer> xDistribution,
@@ -130,6 +131,7 @@ public class EntityDataGenerator {
     }
 
     private static void generateTailFeatures(RandomSource rand, EntityData.CubeSegment lastBodySegment, int lastBodySegmentIndex, Map<Integer, List<EntityData.CubeSegment>> decorations) {
+        // TODO: Tails should make sense (if hor. swim, vertical tail...)
         if (rand.nextFloat() > 0.6) {
             // Flat tail
             IntegerNormalDistribution tailXDistribution = new IntegerNormalDistribution(rand, lastBodySegment.x(), lastBodySegment.x() / 2.0F);
@@ -149,5 +151,16 @@ public class EntityDataGenerator {
 
         // 2 Pronged Tail
         // TODO
+    }
+
+    private static Map<String, Float> generateAnimationData(RandomSource rand) {
+        Map<String, Float> animationData = new HashMap<>();
+        NormalDistribution dist =  new NormalDistribution(rand, 1, 0.2F);
+
+        animationData.put("AQUATIC_DIRECTION", rand.nextFloat() > 0.3 ? 1.0F : 0);
+        animationData.put("AQUATIC_BASE_ANGLE_MULTIPLIER", Math.max(dist.nextValue(), 0.01F));
+        animationData.put("AQUATIC_BASE_AMPLITUDE_MULTIPLIER", Math.max(dist.nextValue(), 0.01F));
+
+        return animationData;
     }
 }

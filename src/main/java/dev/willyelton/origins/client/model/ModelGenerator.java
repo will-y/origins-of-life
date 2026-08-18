@@ -1,6 +1,6 @@
 package dev.willyelton.origins.client.model;
 
-import dev.willyelton.origins.common.entity.EntityData;
+import dev.willyelton.origins.common.entity.data.EntityData;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;

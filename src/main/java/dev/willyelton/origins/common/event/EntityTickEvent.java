@@ -4,7 +4,7 @@ import dev.willyelton.origins.Config;
 import dev.willyelton.origins.OriginsOfLife;
 import dev.willyelton.origins.common.DataComponents;
 import dev.willyelton.origins.common.entity.AquaticCreature;
-import dev.willyelton.origins.common.entity.EntityDataGenerator;
+import dev.willyelton.origins.common.entity.data.EntityDataGenerator;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;

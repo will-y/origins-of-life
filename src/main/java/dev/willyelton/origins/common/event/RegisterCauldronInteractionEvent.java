@@ -2,7 +2,7 @@ package dev.willyelton.origins.common.event;
 
 import dev.willyelton.origins.OriginsOfLife;
 import dev.willyelton.origins.common.DataComponents;
-import dev.willyelton.origins.common.entity.EntityDataGenerator;
+import dev.willyelton.origins.common.entity.data.EntityDataGenerator;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;

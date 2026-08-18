@@ -1,4 +1,4 @@
-package dev.willyelton.origins.common.entity;
+package dev.willyelton.origins.common.entity.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -21,26 +21,30 @@ public final class EntityData {
     public static final Codec<EntityData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             CubeSegment.CODEC.fieldOf("head").forGetter(EntityData::head),
             CubeSegment.CODEC.listOf().fieldOf("bodySegments").forGetter(EntityData::bodySegments),
-            Codec.unboundedMap(STRINT, CubeSegment.CODEC.listOf()).fieldOf("decorations").forGetter(EntityData::decorations)
+            Codec.unboundedMap(STRINT, CubeSegment.CODEC.listOf()).fieldOf("decorations").forGetter(EntityData::decorations),
+            Codec.unboundedMap(Codec.STRING, Codec.FLOAT).fieldOf("animationData").forGetter(EntityData::animationData)
     ).apply(instance, EntityData::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, EntityData> STREAM_CODEC = StreamCodec.composite(
             CubeSegment.STREAM_CODEC, EntityData::head,
             CubeSegment.STREAM_CODEC.apply(ByteBufCodecs.list()), EntityData::bodySegments,
             ByteBufCodecs.map(HashMap::new, ByteBufCodecs.INT, CubeSegment.STREAM_CODEC.apply(ByteBufCodecs.list())), EntityData::decorations,
+            ByteBufCodecs.map(HashMap::new, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.FLOAT), EntityData::animationData,
             EntityData::new);
 
     private final CubeSegment head;
     private final List<CubeSegment> bodySegments;
     private final Map<Integer, List<CubeSegment>> decorations;
     private @Nullable List<CubeSegment> allSegments;
+    private final Map<String, Float> animationData;
 
     private @Nullable Sizes sizes = null;
 
-    public EntityData(CubeSegment head, List<CubeSegment> bodySegments, Map<Integer, List<CubeSegment>> decorations) {
+    public EntityData(CubeSegment head, List<CubeSegment> bodySegments, Map<Integer, List<CubeSegment>> decorations, Map<String, Float> animationData) {
         this.head = head;
         this.bodySegments = bodySegments;
         this.decorations = decorations;
+        this.animationData = animationData;
     }
 
     public CubeSegment head() {
@@ -53,6 +57,10 @@ public final class EntityData {
 
     public Map<Integer, List<CubeSegment>> decorations() {
         return decorations;
+    }
+
+    public Map<String, Float> animationData() {
+        return animationData;
     }
 
     public List<CubeSegment> allSegments() {

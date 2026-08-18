@@ -1,6 +1,8 @@
 package dev.willyelton.origins.common.entity;
 
 import dev.willyelton.origins.OriginsOfLife;
+import dev.willyelton.origins.common.entity.data.EntityData;
+import dev.willyelton.origins.common.entity.data.EntityDataGenerator;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;

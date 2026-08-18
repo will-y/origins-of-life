@@ -1,5 +1,7 @@
 package dev.willyelton.origins.common.entity;
 
+import dev.willyelton.origins.common.entity.data.EntityData;
+import dev.willyelton.origins.common.entity.data.EntityDataGenerator;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityAttachments;
