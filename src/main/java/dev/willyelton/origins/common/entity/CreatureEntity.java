@@ -2,19 +2,26 @@ package dev.willyelton.origins.common.entity;
 
 import dev.willyelton.origins.common.entity.data.EntityData;
 import dev.willyelton.origins.common.entity.data.EntityDataGenerator;
+import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityAttachments;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeMap;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
+
+import java.util.Map;
 
 public abstract class CreatureEntity extends PathfinderMob implements IEntityWithComplexSpawn {
 
@@ -26,8 +33,22 @@ public abstract class CreatureEntity extends PathfinderMob implements IEntityWit
     protected CreatureEntity(EntityType<? extends PathfinderMob> type, Level level, EntityData entityData) {
         this.entityData = entityData;
         super(type, level);
-        // Use Entity Dimensions
+        init();
+
+    }
+
+    private void init() {
         this.dimensions = createDimensions(entityData);
+        AttributeSupplier.Builder attributeBuilder = Mob.createMobAttributes();
+
+        for (Map.Entry<Holder<Attribute>, Double> entry : entityData.defaultAttributes().entrySet()) {
+            attributeBuilder.add(entry.getKey(), entry.getValue());
+        }
+
+        this.attributes = new AttributeMap(attributeBuilder.build());
+
+        // Redo some things in the living entity
+        this.setHealth(this.getMaxHealth());
     }
 
     protected CreatureEntity(EntityType<? extends PathfinderMob> type, Level level) {
@@ -62,7 +83,7 @@ public abstract class CreatureEntity extends PathfinderMob implements IEntityWit
     @Override
     public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
         this.entityData = EntityData.STREAM_CODEC.decode(additionalData);
-        this.dimensions = createDimensions(entityData);
+        init();
     }
 
     @Override

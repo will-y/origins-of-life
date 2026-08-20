@@ -15,7 +15,7 @@ import static dev.willyelton.origins.OriginsOfLife.rl;
 
 public class CreatureRenderer extends LivingEntityRenderer<CreatureEntity, CreatureRenderState, CreatureModel> {
 
-    public static final Identifier TEXTURE = rl("textures/entity/creature/temp.png");
+    public static final Identifier TEXTURE = rl("textures/entity/creature/background.png");
 
     public CreatureRenderer(EntityRendererProvider.Context context) {
         super(context, new CreatureModel(ModelGenerator.defaultModel()), 0.5F);
@@ -43,5 +43,12 @@ public class CreatureRenderer extends LivingEntityRenderer<CreatureEntity, Creat
     public void submit(CreatureRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
         this.model = new CreatureModel(CreatureModels.getRoot(state.entityData));
         super.submit(state, poseStack, submitNodeCollector, camera);
+    }
+
+    // TODO: Not going to work, will probably need to look at layers for the different parts. For now just do this
+    // First see how it goes with eyes
+    @Override
+    protected int getModelTint(CreatureRenderState state) {
+        return 0xFF0000FF;
     }
 }

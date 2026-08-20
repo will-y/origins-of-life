@@ -2,10 +2,12 @@ package dev.willyelton.origins.common.entity.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
@@ -22,7 +24,8 @@ public final class EntityData {
             CubeSegment.CODEC.fieldOf("head").forGetter(EntityData::head),
             CubeSegment.CODEC.listOf().fieldOf("bodySegments").forGetter(EntityData::bodySegments),
             Codec.unboundedMap(STRINT, CubeSegment.CODEC.listOf()).fieldOf("decorations").forGetter(EntityData::decorations),
-            Codec.unboundedMap(Codec.STRING, Codec.FLOAT).fieldOf("animationData").forGetter(EntityData::animationData)
+            Codec.unboundedMap(Codec.STRING, Codec.FLOAT).fieldOf("animationData").forGetter(EntityData::animationData),
+            Codec.unboundedMap(Attribute.CODEC, Codec.DOUBLE).fieldOf("defaultAttributes").forGetter(EntityData::defaultAttributes)
     ).apply(instance, EntityData::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, EntityData> STREAM_CODEC = StreamCodec.composite(
@@ -30,6 +33,7 @@ public final class EntityData {
             CubeSegment.STREAM_CODEC.apply(ByteBufCodecs.list()), EntityData::bodySegments,
             ByteBufCodecs.map(HashMap::new, ByteBufCodecs.INT, CubeSegment.STREAM_CODEC.apply(ByteBufCodecs.list())), EntityData::decorations,
             ByteBufCodecs.map(HashMap::new, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.FLOAT), EntityData::animationData,
+            ByteBufCodecs.map(HashMap::new, Attribute.STREAM_CODEC, ByteBufCodecs.DOUBLE), EntityData::defaultAttributes,
             EntityData::new);
 
     private final CubeSegment head;
@@ -37,14 +41,17 @@ public final class EntityData {
     private final Map<Integer, List<CubeSegment>> decorations;
     private @Nullable List<CubeSegment> allSegments;
     private final Map<String, Float> animationData;
+    private final Map<Holder<Attribute>, Double> defaultAttributes;
 
     private @Nullable Sizes sizes = null;
 
-    public EntityData(CubeSegment head, List<CubeSegment> bodySegments, Map<Integer, List<CubeSegment>> decorations, Map<String, Float> animationData) {
+    public EntityData(CubeSegment head, List<CubeSegment> bodySegments, Map<Integer, List<CubeSegment>> decorations,
+                      Map<String, Float> animationData, Map<Holder<Attribute>, Double> defaultAttributes) {
         this.head = head;
         this.bodySegments = bodySegments;
         this.decorations = decorations;
         this.animationData = animationData;
+        this.defaultAttributes = defaultAttributes;
     }
 
     public CubeSegment head() {
@@ -61,6 +68,10 @@ public final class EntityData {
 
     public Map<String, Float> animationData() {
         return animationData;
+    }
+
+    public Map<Holder<Attribute>, Double> defaultAttributes() {
+        return defaultAttributes;
     }
 
     public List<CubeSegment> allSegments() {
@@ -104,6 +115,7 @@ public final class EntityData {
                 "sizes=" + sizes + ']';
     }
 
+    // Add uv here
     public record CubeSegment(float x0, float y0, float z0, int x, int y, int z, float xRot, float yRot, float zRot, String name) {
         public static final Codec<CubeSegment> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.FLOAT.fieldOf("x0").forGetter(CubeSegment::x0),

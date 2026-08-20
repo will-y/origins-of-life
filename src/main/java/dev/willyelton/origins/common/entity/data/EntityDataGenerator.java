@@ -4,8 +4,11 @@ import dev.willyelton.origins.util.random.Distribution;
 import dev.willyelton.origins.util.random.IntegerNormalDistribution;
 import dev.willyelton.origins.util.random.NormalDistribution;
 import dev.willyelton.origins.util.random.WeightedDistribution;
+import net.minecraft.core.Holder;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
@@ -25,7 +28,8 @@ public class EntityDataGenerator {
     private static final int[] BODY_NEXT_Y_Z_SIZE_WEIGHTS = new int[]{60, 70, 80, 90, 10};
 
     public static EntityData empty() {
-        return new EntityData(new EntityData.CubeSegment(0, 0, 0, 1, 1, 1), new ArrayList<>(), new HashMap<>(), new HashMap<>());
+        return new EntityData(new EntityData.CubeSegment(0, 0, 0, 1, 1, 1), new ArrayList<>(),
+                new HashMap<>(), new HashMap<>(), new HashMap<>());
     }
 
     public static EntityData random(Level level) {
@@ -56,7 +60,7 @@ public class EntityDataGenerator {
             generateTailFeatures(rand, bodySegments.getLast(), bodySegments.size(), decorations);
         }
 
-        return new EntityData(head, bodySegments, decorations, generateAnimationData(rand));
+        return new EntityData(head, bodySegments, decorations, generateAnimationData(rand), generateDefaultAttributes(rand));
     }
 
     private static EntityData.CubeSegment nextSegment(EntityData.CubeSegment current, Distribution<Integer> xDistribution,
@@ -162,5 +166,27 @@ public class EntityDataGenerator {
         animationData.put("AQUATIC_BASE_AMPLITUDE_MULTIPLIER", Math.max(dist.nextValue(), 0.01F));
 
         return animationData;
+    }
+
+    private static Map<Holder<Attribute>, Double> generateDefaultAttributes(RandomSource rand) {
+        HashMap<Holder<Attribute>, Double> defaultAttributes = new HashMap<>();
+        defaultAttributes.put(Attributes.ARMOR, generateAttribute(rand, 3, 1));
+        defaultAttributes.put(Attributes.ARMOR_TOUGHNESS, generateAttribute(rand, 2, 1));
+        defaultAttributes.put(Attributes.ATTACK_DAMAGE, generateAttribute(rand, 5, 2, 0.5F));
+        defaultAttributes.put(Attributes.ATTACK_KNOCKBACK, generateAttribute(rand, 0.5F, 0.1F));
+        defaultAttributes.put(Attributes.KNOCKBACK_RESISTANCE, generateAttribute(rand, 0.2F, 0.05F));
+        defaultAttributes.put(Attributes.MAX_HEALTH, generateAttribute(rand, 15, 5, 0.5F));
+        defaultAttributes.put(Attributes.MOVEMENT_SPEED, generateAttribute(rand, 1, 0.5F, 0.1F));
+        defaultAttributes.put(Attributes.SCALE, generateAttribute(rand, 1, 0.3F, 0.1F));
+        return defaultAttributes;
+    }
+
+    private static double generateAttribute(RandomSource rand, float mean, float variance) {
+        return generateAttribute(rand, mean, variance, 0);
+    }
+
+    private static double generateAttribute(RandomSource rand, float mean, float variance, float floor) {
+        NormalDistribution distribution = new NormalDistribution(rand, mean, variance);
+        return Math.max(distribution.nextValue(), floor);
     }
 }

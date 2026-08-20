@@ -20,6 +20,9 @@ sourceSets.main.resources {
 }
 
 repositories {
+    maven {
+        url "https://cursemaven.com"
+    }
 }
 
 base {
@@ -71,6 +74,7 @@ configurations {
 }
 
 dependencies {
+    implementation "curse.maven:jade-324717:8650925"
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
