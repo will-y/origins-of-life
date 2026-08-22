@@ -3,20 +3,20 @@ package dev.willyelton.origins.common.entity;
 import dev.willyelton.origins.OriginsOfLife;
 import dev.willyelton.origins.common.entity.data.EntityData;
 import dev.willyelton.origins.common.entity.data.EntityDataGenerator;
+import dev.willyelton.origins.common.entity.data.behavior.Behavior;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.PanicGoal;
 import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal;
+import net.minecraft.world.entity.ai.goal.target.TargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
@@ -37,8 +37,22 @@ public class AquaticCreature extends CreatureEntity {
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(0, new PanicGoal(this, 1.25));
-        this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, Player.class, 8.0F, 1.2, 3, EntitySelector.NO_SPECTATORS));
-        this.goalSelector.addGoal(4, new RandomSwimmingGoal(this, 1, 40));
+//        this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, Player.class, 8.0F, 1.2, 3, EntitySelector.NO_SPECTATORS));
+
+
+        int prio = 1;
+        int targetPrio = 0;
+        for (Behavior behavior : this.entityData().behaviors()) {
+            for (Goal goal : behavior.createGoals(this)) {
+                this.goalSelector.addGoal(prio++, goal);
+            }
+
+            for (TargetGoal targetGoal : behavior.createTargetGoals(this)) {
+                this.targetSelector.addGoal(targetPrio++, targetGoal);
+            }
+        }
+
+        this.goalSelector.addGoal(prio, new RandomSwimmingGoal(this, 1, 40));
     }
 
     @Override

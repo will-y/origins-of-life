@@ -2,6 +2,7 @@ package dev.willyelton.origins.common.entity.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.willyelton.origins.common.entity.data.behavior.Behavior;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -23,7 +24,8 @@ public final class EntityData {
             ModelData.CODEC.fieldOf("modelData").forGetter(EntityData::modelData),
             Codec.unboundedMap(Codec.STRING, Codec.FLOAT).fieldOf("animationData").forGetter(EntityData::animationData),
             Codec.unboundedMap(Attribute.CODEC, Codec.DOUBLE).fieldOf("defaultAttributes").forGetter(EntityData::defaultAttributes),
-            Codec.INT.fieldOf("color").forGetter(EntityData::color)
+            Codec.INT.fieldOf("color").forGetter(EntityData::color),
+            Behavior.CODEC.listOf().fieldOf("behaviors").forGetter(EntityData::behaviors)
     ).apply(instance, EntityData::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, EntityData> STREAM_CODEC = StreamCodec.composite(
@@ -31,6 +33,7 @@ public final class EntityData {
             ByteBufCodecs.map(HashMap::new, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.FLOAT), EntityData::animationData,
             ByteBufCodecs.map(HashMap::new, Attribute.STREAM_CODEC, ByteBufCodecs.DOUBLE), EntityData::defaultAttributes,
             ByteBufCodecs.INT, EntityData::color,
+            Behavior.STREAM_CODEC.apply(ByteBufCodecs.list()), EntityData::behaviors,
             EntityData::new);
 
     private final ModelData modelData;
@@ -38,17 +41,22 @@ public final class EntityData {
     private final Map<Holder<Attribute>, Double> defaultAttributes;
     // TODO: Might move to cube segment eventually? Or move to something else idk
     private final int color;
+    /// List of behaviors in priority order. These will create goals and target goals for the entity
+    private final List<Behavior> behaviors;
 
     public EntityData(CubeSegment head, List<CubeSegment> bodySegments, Map<Integer, List<CubeSegment>> decorations,
-                      Map<String, Float> animationData, Map<Holder<Attribute>, Double> defaultAttributes, int color) {
-        this(new ModelData(head, bodySegments, decorations), animationData, defaultAttributes, color);
+                      Map<String, Float> animationData, Map<Holder<Attribute>, Double> defaultAttributes, int color,
+                      List<Behavior> behaviors) {
+        this(new ModelData(head, bodySegments, decorations), animationData, defaultAttributes, color, behaviors);
     }
 
-    public EntityData(ModelData modelData, Map<String, Float> animationData, Map<Holder<Attribute>, Double> defaultAttributes, int color) {
+    public EntityData(ModelData modelData, Map<String, Float> animationData, Map<Holder<Attribute>, Double> defaultAttributes,
+                      int color, List<Behavior> behaviors) {
         this.modelData = modelData;
         this.animationData = animationData;
         this.defaultAttributes = defaultAttributes;
         this.color = color;
+        this.behaviors = behaviors;
     }
 
     public ModelData modelData() {
@@ -65,6 +73,10 @@ public final class EntityData {
 
     public int color() {
         return color;
+    }
+
+    public List<Behavior> behaviors() {
+        return behaviors;
     }
 
     public List<CubeSegment> allSegments() {

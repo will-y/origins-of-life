@@ -1,5 +1,7 @@
 package dev.willyelton.origins.common.entity.data;
 
+import dev.willyelton.origins.common.entity.data.behavior.Behavior;
+import dev.willyelton.origins.common.entity.data.behavior.PlayerBehavior;
 import dev.willyelton.origins.util.random.Distribution;
 import dev.willyelton.origins.util.random.IntegerNormalDistribution;
 import dev.willyelton.origins.util.random.NormalDistribution;
@@ -52,7 +54,7 @@ public class EntityDataGenerator {
 
     public static EntityData empty() {
         return new EntityData(new EntityData.CubeSegment(0, 0, 0, 1, 1, 1, 0, 0), new ArrayList<>(),
-                new HashMap<>(), new HashMap<>(), new HashMap<>(), -1);
+                new HashMap<>(), new HashMap<>(), new HashMap<>(), -1, List.of());
     }
 
     public static EntityData random(Level level) {
@@ -85,7 +87,8 @@ public class EntityDataGenerator {
             generateTailFeatures(rand, bodySegments.getLast(), bodySegments.size(), decorations);
         }
 
-        return new EntityData(head, bodySegments, decorations, generateAnimationData(rand), generateDefaultAttributes(rand), randomElement(rand, COLORS));
+        return new EntityData(head, bodySegments, decorations, generateAnimationData(rand), generateDefaultAttributes(rand),
+                randomElement(rand, COLORS), generateBehaviors(rand));
     }
 
     private static EntityData.CubeSegment nextSegment(EntityData.CubeSegment current, Distribution<Integer> xDistribution,
@@ -260,5 +263,21 @@ public class EntityDataGenerator {
     private static int randomElement(RandomSource rand, int[] array) {
         int index = rand.nextInt(array.length);
         return array[index];
+    }
+
+    private static List<Behavior> generateBehaviors(RandomSource rand) {
+        List<Behavior> behaviors = new ArrayList<>();
+
+        WeightedDistribution dist = new WeightedDistribution(rand, new int[] {60, 20, 20});
+
+        int playerBehavior = dist.nextValue();
+
+        switch (playerBehavior) {
+            case 0 -> behaviors.add(PlayerBehavior.NEUTRAL);
+            case 1 -> behaviors.add(PlayerBehavior.AFRAID);
+            case 2 -> behaviors.add(PlayerBehavior.AGGRESSIVE);
+        }
+
+        return behaviors;
     }
 }

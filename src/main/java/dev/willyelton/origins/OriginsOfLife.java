@@ -3,6 +3,7 @@ package dev.willyelton.origins;
 import com.mojang.logging.LogUtils;
 import dev.willyelton.origins.common.DataComponents;
 import dev.willyelton.origins.common.entity.AquaticCreature;
+import dev.willyelton.origins.common.entity.data.behavior.Behavior;
 import dev.willyelton.origins.common.item.CageItem;
 import dev.willyelton.origins.common.item.FossilItem;
 import net.minecraft.core.registries.Registries;
@@ -156,6 +157,8 @@ public class OriginsOfLife {
         DataComponents.COMPONENTS.register(modEventBus);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+
+        Behavior.bootstrap();
     }
 
     public static Identifier rl(String path) {
