@@ -16,7 +16,7 @@ import java.util.List;
 /// Takes in entity data and creates the model
 public class ModelGenerator {
 
-    public static ModelPart generateModel(@Nullable EntityData entityData) {
+    public static ModelPart generateModel(EntityData.@Nullable ModelData entityData) {
         if (entityData == null) {
             return DEFAULT_MODEL;
         }
@@ -28,7 +28,7 @@ public class ModelGenerator {
         return LayerDefinition.create(meshDefinition, 512, 512).bakeRoot();
     }
 
-    private static void generateBody(EntityData entityData, PartDefinition partDefinition) {
+    private static void generateBody(EntityData.ModelData entityData, PartDefinition partDefinition) {
         PartDefinition main = partDefinition.addOrReplaceChild("main", new CubeListBuilder(), PartPose.rotation(0, -Mth.PI / 2.0F, 0));
         // Head + body
         List<PartDefinition> allBodyParts = new ArrayList<>();

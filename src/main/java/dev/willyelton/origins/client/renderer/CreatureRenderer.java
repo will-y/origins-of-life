@@ -41,7 +41,7 @@ public class CreatureRenderer extends LivingEntityRenderer<CreatureEntity, Creat
 
     @Override
     public void submit(CreatureRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
-        this.model = new CreatureModel(CreatureModels.getRoot(state.entityData));
+        this.model = new CreatureModel(CreatureModels.getRoot(state.entityData.modelData()));
         super.submit(state, poseStack, submitNodeCollector, camera);
     }
 

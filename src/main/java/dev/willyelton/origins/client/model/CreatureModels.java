@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CreatureModels {
-    private static final Map<EntityData, ModelPart> CACHED_MODEL_PARTS = new HashMap<>();
+    private static final Map<EntityData.ModelData, ModelPart> CACHED_MODEL_PARTS = new HashMap<>();
 
-    public static ModelPart getRoot(EntityData data) {
+    public static ModelPart getRoot(EntityData.ModelData data) {
         if (CACHED_MODEL_PARTS.containsKey(data)) {
             return CACHED_MODEL_PARTS.get(data);
         }

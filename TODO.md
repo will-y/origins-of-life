@@ -3,6 +3,12 @@
 - Textures
   - Eyes / other facial features
 - Some behavior in entity data
+  - Goals:
+    - AvoidEntityGoal (player)
+    - DolphinJumpGoal?
+    - FollowMobGoal (player)
+    - Some attack goal
+    - FindWaterGoal (always?)
 - Readme / page for curse
 - Redo EntityData into more subobjects?
 
@@ -23,6 +29,7 @@
 - Item and block textures
 - Color per body part?
 - EntityDataGenerator configurations
+- Some way to view stuff about entities
 
 ## Maybe at Some Point
 - Decorations
