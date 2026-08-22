@@ -25,7 +25,8 @@ public final class EntityData {
             CubeSegment.CODEC.listOf().fieldOf("bodySegments").forGetter(EntityData::bodySegments),
             Codec.unboundedMap(STRINT, CubeSegment.CODEC.listOf()).fieldOf("decorations").forGetter(EntityData::decorations),
             Codec.unboundedMap(Codec.STRING, Codec.FLOAT).fieldOf("animationData").forGetter(EntityData::animationData),
-            Codec.unboundedMap(Attribute.CODEC, Codec.DOUBLE).fieldOf("defaultAttributes").forGetter(EntityData::defaultAttributes)
+            Codec.unboundedMap(Attribute.CODEC, Codec.DOUBLE).fieldOf("defaultAttributes").forGetter(EntityData::defaultAttributes),
+            Codec.INT.fieldOf("color").forGetter(EntityData::color)
     ).apply(instance, EntityData::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, EntityData> STREAM_CODEC = StreamCodec.composite(
@@ -34,6 +35,7 @@ public final class EntityData {
             ByteBufCodecs.map(HashMap::new, ByteBufCodecs.INT, CubeSegment.STREAM_CODEC.apply(ByteBufCodecs.list())), EntityData::decorations,
             ByteBufCodecs.map(HashMap::new, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.FLOAT), EntityData::animationData,
             ByteBufCodecs.map(HashMap::new, Attribute.STREAM_CODEC, ByteBufCodecs.DOUBLE), EntityData::defaultAttributes,
+            ByteBufCodecs.INT, EntityData::color,
             EntityData::new);
 
     private final CubeSegment head;
@@ -42,16 +44,19 @@ public final class EntityData {
     private @Nullable List<CubeSegment> allSegments;
     private final Map<String, Float> animationData;
     private final Map<Holder<Attribute>, Double> defaultAttributes;
+    // TODO: Might move to cube segment eventually? Or move to something else idk
+    private final int color;
 
     private @Nullable Sizes sizes = null;
 
     public EntityData(CubeSegment head, List<CubeSegment> bodySegments, Map<Integer, List<CubeSegment>> decorations,
-                      Map<String, Float> animationData, Map<Holder<Attribute>, Double> defaultAttributes) {
+                      Map<String, Float> animationData, Map<Holder<Attribute>, Double> defaultAttributes, int color) {
         this.head = head;
         this.bodySegments = bodySegments;
         this.decorations = decorations;
         this.animationData = animationData;
         this.defaultAttributes = defaultAttributes;
+        this.color = color;
     }
 
     public CubeSegment head() {
@@ -74,6 +79,10 @@ public final class EntityData {
         return defaultAttributes;
     }
 
+    public int color() {
+        return color;
+    }
+
     public List<CubeSegment> allSegments() {
         if (allSegments == null) {
             allSegments = Stream.concat(Stream.of(head), bodySegments.stream()).toList();
@@ -83,7 +92,6 @@ public final class EntityData {
     }
 
     /// Returns some things about the computed model's size (in model space, not block space)
-    /// TODO: Fix these now that we know placements
     public Sizes sizes() {
         if (sizes == null) {
             int maxX = allSegments().stream().mapToInt(EntityData.CubeSegment::x).sum();
@@ -115,8 +123,7 @@ public final class EntityData {
                 "sizes=" + sizes + ']';
     }
 
-    // Add uv here
-    public record CubeSegment(float x0, float y0, float z0, int x, int y, int z, float xRot, float yRot, float zRot, String name) {
+    public record CubeSegment(float x0, float y0, float z0, int x, int y, int z, float xRot, float yRot, float zRot, int u, int v, String name) {
         public static final Codec<CubeSegment> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.FLOAT.fieldOf("x0").forGetter(CubeSegment::x0),
                 Codec.FLOAT.fieldOf("y0").forGetter(CubeSegment::y0),
@@ -127,6 +134,8 @@ public final class EntityData {
                 Codec.FLOAT.fieldOf("xRot").forGetter(CubeSegment::xRot),
                 Codec.FLOAT.fieldOf("yRot").forGetter(CubeSegment::yRot),
                 Codec.FLOAT.fieldOf("zRot").forGetter(CubeSegment::zRot),
+                Codec.INT.fieldOf("u").forGetter(CubeSegment::u),
+                Codec.INT.fieldOf("v").forGetter(CubeSegment::v),
                 Codec.STRING.fieldOf("name").forGetter(CubeSegment::name)
         ).apply(instance, CubeSegment::new));
 
@@ -140,28 +149,30 @@ public final class EntityData {
                 ByteBufCodecs.FLOAT, CubeSegment::xRot,
                 ByteBufCodecs.FLOAT, CubeSegment::yRot,
                 ByteBufCodecs.FLOAT, CubeSegment::zRot,
+                ByteBufCodecs.INT, CubeSegment::u,
+                ByteBufCodecs.INT, CubeSegment::v,
                 ByteBufCodecs.STRING_UTF8, CubeSegment::name,
                 CubeSegment::new);
 
-        public CubeSegment(int x, int y, int z) {
-            this(0, 0, 0, x, y, z);
+        public CubeSegment(int x, int y, int z, int u, int v) {
+            this(0, 0, 0, x, y, z, u, v);
         }
 
-        public CubeSegment(float x0, float y0, float z0, int x, int y, int z) {
-            this(x0, y0, z0, x, y, z, 0, 0, 0, "");
+        public CubeSegment(float x0, float y0, float z0, int x, int y, int z, int u, int v) {
+            this(x0, y0, z0, x, y, z, 0, 0, 0, u, v, "");
         }
 
-        public CubeSegment(float x0, float y0, float z0, int x, int y, int z, String name) {
-            this(x0, y0, z0, x, y, z, 0, 0, 0, name);
+        public CubeSegment(float x0, float y0, float z0, int x, int y, int z, int u, int v, String name) {
+            this(x0, y0, z0, x, y, z, 0, 0, 0, u, v, name);
         }
 
-        public CubeSegment withOffset(float x0, float y0, float z0) {
-            return new CubeSegment(x0, y0, z0, x, y, z);
+        public CubeSegment withOffset(float x0, float y0, float z0, int u, int v) {
+            return new CubeSegment(x0, y0, z0, x, y, z, u, v);
         }
 
-        public static CubeSegment randomSquare(RandomSource random, int min, int max) {
+        public static CubeSegment randomSquare(RandomSource random, int min, int max, int u, int v) {
             int i = random.nextIntBetweenInclusive(min, max);
-            return new CubeSegment(i, i, i);
+            return new CubeSegment(i, i, i, u, v);
         }
     }
 

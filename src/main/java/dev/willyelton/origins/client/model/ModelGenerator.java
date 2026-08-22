@@ -78,7 +78,7 @@ public class ModelGenerator {
 
         for (int i = 0; i < cubeSegments.size(); i++) {
             EntityData.CubeSegment segment = cubeSegments.get(i);
-            builders.get(i).texOffs(5, 5)
+            builders.get(i).texOffs(segment.u(), segment.v())
                     .addBox(segment.x0() - sizes.centerX(), segment.y0(), segment.z0() - sizes.centerZ(), segment.x(), segment.y(), segment.z());
         }
     }

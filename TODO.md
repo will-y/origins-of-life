@@ -3,6 +3,8 @@
 - Textures
   - Eyes / other facial features
 - Some behavior in entity data
+- Readme / page for curse
+- Redo EntityData into more subobjects?
 
 ## Modjam End
 - Hitboxes (y is messed up)
@@ -19,6 +21,8 @@
   - At least get attributes working
   - Model combinations if time
 - Item and block textures
+- Color per body part?
+- EntityDataGenerator configurations
 
 ## Maybe at Some Point
 - Decorations

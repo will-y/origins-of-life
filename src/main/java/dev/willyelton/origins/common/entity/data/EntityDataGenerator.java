@@ -10,6 +10,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,10 +27,32 @@ public class EntityDataGenerator {
     private static final int[] BODY_NEXT_X_SIZE_WEIGHTS = new int[]{60, 70, 80, 90, 10};
     // -3
     private static final int[] BODY_NEXT_Y_Z_SIZE_WEIGHTS = new int[]{60, 70, 80, 90, 10};
+    private static final int[] COLORS = new int[] {
+            -15590866, // Abyssal Navy (0xFF121A2E)
+            -15193275, // Deep Trench (0xFF182B45)
+            -15844541, // Midnight Cyan (0xFF0E3B43)
+            -15379879, // Oceanic Teal (0xFF155259)
+            -15037282, // Vibrant Aqua (0xFF1A8C9E)
+            -13065307, // Seafoam Glow (0xFF38A3A5)
+            -13809118, // Kelp Green (0xFF2D4A22)
+            -2729342,  // Coral Reef Pink (0xFFD65A82)
+            -13492674, // Abyssal Purple (0xFF321E3E)
+            -14522676, // Biolum Blue (0xFF2266CC)
+            -2566967,  // Stained Bone (0xFFD8D4C9)
+            -15128511, // Deep Sea Blue (0xFF192841)
+            -15441040, // Tidal Cyan (0xFF146370)
+            -13945797, // Phantom Grey (0xFF2B343B)
+            -16045264,  // Glowsquid Dark (0xFF0B2B30)
+            -16777216, // Abyssal Black (0xFF000000)
+            -12105913, // Slate Grey (0xFF474747)
+            -7829368,  // Pale Ash Grey (0xFF888888)
+            -21444,    // Bioluminescent Yellow (0xFFFFAB1C)
+            -3404746   // Angler Crimson Red (0xFFCC0836)
+    };
 
     public static EntityData empty() {
-        return new EntityData(new EntityData.CubeSegment(0, 0, 0, 1, 1, 1), new ArrayList<>(),
-                new HashMap<>(), new HashMap<>(), new HashMap<>());
+        return new EntityData(new EntityData.CubeSegment(0, 0, 0, 1, 1, 1, 0, 0), new ArrayList<>(),
+                new HashMap<>(), new HashMap<>(), new HashMap<>(), -1);
     }
 
     public static EntityData random(Level level) {
@@ -42,10 +65,12 @@ public class EntityDataGenerator {
 
         List<EntityData.CubeSegment> bodySegments = new ArrayList<>();
 
-        EntityData.CubeSegment head = EntityData.CubeSegment.randomSquare(rand, MIN_BASE_BODY_SIZE, MAX_BASE_BODY_SIZE);
+        var bodyUV = generateUV(rand);
+        EntityData.CubeSegment head = EntityData.CubeSegment.randomSquare(rand, MIN_BASE_BODY_SIZE, MAX_BASE_BODY_SIZE, bodyUV.getLeft(), bodyUV.getRight());
         EntityData.CubeSegment current = head;
+
         for (int i = 0; i < bodySegmentCount; i++) {
-            current = nextSegment(current, bodyXSizeDistribution, bodyYZSizeDistribution);
+            current = nextSegment(current, bodyXSizeDistribution, bodyYZSizeDistribution, rand, bodyUV);
             bodySegments.add(current);
         }
 
@@ -60,11 +85,11 @@ public class EntityDataGenerator {
             generateTailFeatures(rand, bodySegments.getLast(), bodySegments.size(), decorations);
         }
 
-        return new EntityData(head, bodySegments, decorations, generateAnimationData(rand), generateDefaultAttributes(rand));
+        return new EntityData(head, bodySegments, decorations, generateAnimationData(rand), generateDefaultAttributes(rand), randomElement(rand, COLORS));
     }
 
     private static EntityData.CubeSegment nextSegment(EntityData.CubeSegment current, Distribution<Integer> xDistribution,
-                                                      Distribution<Integer> yZDistribution) {
+                                                      Distribution<Integer> yZDistribution, RandomSource rand, Pair<Integer, Integer> uv) {
         int dX = xDistribution.nextValue() - 3;
         int dY = yZDistribution.nextValue() - 3;
         int dZ = yZDistribution.nextValue() - 3;
@@ -75,7 +100,7 @@ public class EntityDataGenerator {
         return new EntityData.CubeSegment(current.x0() + current.x(),
                 current.y0() + current.y() / 2.0F - y / 2.0F,
                 current.z0() + current.z() / 2.0F - z / 2.0F,
-                x, y, z);
+                x, y, z, uv.getLeft(), uv.getRight());
     }
 
     private static RandomSource randomSource(Level level) {
@@ -87,6 +112,8 @@ public class EntityDataGenerator {
     }
 
     private static void generateFins(RandomSource rand, List<EntityData.CubeSegment> bodySegments, Map<Integer, List<EntityData.CubeSegment>> decorations) {
+        var uv = generateUV(rand);
+
         // Top fins
         if (rand.nextFloat() > 0.3) {
             float zRot = (rand.nextInt(20, 90)) * Mth.PI / 180.0F;
@@ -96,7 +123,11 @@ public class EntityDataGenerator {
                     int y = rand.nextInt(1, segment.x() * 2 / 3 + 1);
                     int z = rand.nextInt(1, segment.z() / 3 + 1);
                     int x = rand.nextInt(Math.min(y, z), Math.max(y, z) + 1);
-                    decorations.computeIfAbsent(i, ArrayList::new).add(new EntityData.CubeSegment(segment.x0() + segment.x() / 2.0F - x / 2.0F + Mth.sin(zRot) * x, segment.y0() - Mth.cos(zRot) * Mth.sqrt(y * y + z * z), segment.z0() + segment.z() / 2.0F - z / 2.0F, x, y, z, 0, 0, zRot, "top_fin"));
+                    decorations.computeIfAbsent(i, ArrayList::new).add(new EntityData.CubeSegment(segment.x0() + segment.x() / 2.0F - x / 2.0F + Mth.sin(zRot) * x,
+                            segment.y0() - Mth.cos(zRot) * Mth.sqrt(y * y + z * z),
+                            segment.z0() + segment.z() / 2.0F - z / 2.0F,
+                            x, y, z, 0, 0, zRot,
+                            uv.getLeft(), uv.getRight(), "top_fin"));
                 }
             }
         }
@@ -112,15 +143,16 @@ public class EntityDataGenerator {
 
                     float x0 = segment.x0() + segment.x() / 2.0F - x / 2.0F;
                     float y0 = segment.y0() + segment.y() / 2.0F - y / 2.0F;
-                    decorations.computeIfAbsent(i, ArrayList::new).add(new EntityData.CubeSegment(x0 + x, y0, segment.z0(), x, y, z, 0, Mth.PI, 0, "left_fin"));
-                    decorations.computeIfAbsent(i, ArrayList::new).add(new EntityData.CubeSegment(x0, y0, segment.z0() + segment.z(), x, y, z, "right_fin"));
+
+                    decorations.computeIfAbsent(i, ArrayList::new).add(new EntityData.CubeSegment(x0 + x, y0, segment.z0(), x, y, z, 0, Mth.PI, 0, uv.getLeft(), uv.getRight(), "left_fin"));
+                    decorations.computeIfAbsent(i, ArrayList::new).add(new EntityData.CubeSegment(x0, y0, segment.z0() + segment.z(), x, y, z, uv.getLeft(), uv.getRight(), "right_fin"));
                 }
             }
         }
     }
 
     private static void generateHeadFeatures(RandomSource rand, EntityData.CubeSegment head, Map<Integer, List<EntityData.CubeSegment>> decorations) {
-        if  (rand.nextFloat() > 0.3) {
+        if (rand.nextFloat() > 0.3) {
             IntegerNormalDistribution noseXDistribution = new IntegerNormalDistribution(rand, 4, 3);
             IntegerNormalDistribution noseYZDistribution = new IntegerNormalDistribution(rand, 3, 4);
             // Nose
@@ -129,8 +161,11 @@ public class EntityDataGenerator {
             int z = Mth.clamp(noseYZDistribution.nextValue(), 1, head.z() / 2);
             float yOffset = rand.nextFloat() * (head.y() / 2.0F - y / 2.0F) + head.y() / 2.0F - y / 2.0F;
             float y0 = head.y0() + yOffset;
+            var uv = generateUV(rand);
 
-            decorations.computeIfAbsent(0, ArrayList::new).add(new EntityData.CubeSegment(head.x0() - x, y0, head.z0() + head.z() / 2.0F - z / 2.0F, x, y, z, "nose"));
+            decorations.computeIfAbsent(0, ArrayList::new).add(new EntityData.CubeSegment(head.x0() - x, y0,
+                    head.z0() + head.z() / 2.0F - z / 2.0F,
+                    x, y, z, uv.getLeft(), uv.getRight(), "nose"));
         }
     }
 
@@ -145,12 +180,13 @@ public class EntityDataGenerator {
             int x = Math.max(tailXDistribution.nextValue(), 3);
             int y = Mth.clamp(tailYDistribution.nextValue(), 1, lastBodySegment.y());
             int z = Mth.clamp(tailZDistribution.nextValue(), 1, lastBodySegment.z() * 2);
+            var uv = generateUV(rand);
 
             decorations.computeIfAbsent(lastBodySegmentIndex, ArrayList::new).add(new EntityData.CubeSegment(
                     lastBodySegment.x0() + lastBodySegment.x(),
                     lastBodySegment.y0() + lastBodySegment.y() / 2.0F - y / 2.0F,
-                    lastBodySegment.z0() + lastBodySegment.z() / 2.0F -  z / 2.0F,
-                    x, y, z, "tail"));
+                    lastBodySegment.z0() + lastBodySegment.z() / 2.0F - z / 2.0F,
+                    x, y, z, uv.getLeft(), uv.getRight(), "tail"));
         }
 
         // 2 Pronged Tail
@@ -159,7 +195,7 @@ public class EntityDataGenerator {
 
     private static Map<String, Float> generateAnimationData(RandomSource rand) {
         Map<String, Float> animationData = new HashMap<>();
-        NormalDistribution dist =  new NormalDistribution(rand, 1, 0.2F);
+        NormalDistribution dist = new NormalDistribution(rand, 1, 0.2F);
 
         animationData.put("AQUATIC_DIRECTION", rand.nextFloat() > 0.3 ? 1.0F : 0);
         animationData.put("AQUATIC_BASE_ANGLE_MULTIPLIER", Math.max(dist.nextValue(), 0.01F));
@@ -188,5 +224,41 @@ public class EntityDataGenerator {
     private static double generateAttribute(RandomSource rand, float mean, float variance, float floor) {
         NormalDistribution distribution = new NormalDistribution(rand, mean, variance);
         return Math.max(distribution.nextValue(), floor);
+    }
+
+    private static Pair<Integer, Integer> generateUV(RandomSource rand) {
+        int pallet = rand.nextInt(4);
+        int uCenter;
+        int vCenter;
+
+        switch (pallet) {
+            case 0 -> {
+                uCenter = 0;
+                vCenter = 0;
+            }
+            case 1 -> {
+                uCenter = 256;
+                vCenter = 0;
+            }
+            case 2 -> {
+                uCenter = 0;
+                vCenter = 256;
+            }
+            case 3 -> {
+                uCenter = 256;
+                vCenter = 256;
+            }
+            default -> throw new IllegalArgumentException("Invalid pallet");
+        }
+
+        int u = rand.nextIntBetweenInclusive(uCenter, uCenter + 64);
+        int v = rand.nextIntBetweenInclusive(vCenter, vCenter + 64);
+
+        return Pair.of(u, v);
+    }
+
+    private static int randomElement(RandomSource rand, int[] array) {
+        int index = rand.nextInt(array.length);
+        return array[index];
     }
 }

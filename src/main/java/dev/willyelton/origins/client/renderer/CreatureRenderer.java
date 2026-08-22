@@ -49,6 +49,6 @@ public class CreatureRenderer extends LivingEntityRenderer<CreatureEntity, Creat
     // First see how it goes with eyes
     @Override
     protected int getModelTint(CreatureRenderState state) {
-        return 0xFF0000FF;
+        return state.entityData.color();
     }
 }
