@@ -24,27 +24,24 @@ public class CreatureModel extends EntityModel<CreatureRenderState> {
     public CreatureModel(ModelPart root) {
         super(root);
 
-        if (root.hasChild("main")) {
-            ModelPart main = root.getChild("main");
-
-            if (main.hasChild("head")) {
-                this.head = main.getChild("head");
-            }
-
-            if (main.hasChild("body")) {
-                List<ModelPart> bodyParts = new ArrayList<>();
-                ModelPart body = main.getChild("body");
-                bodyParts.add(body);
-
-                while (body.hasChild("body_segment")) {
-                    body = body.getChild("body_segment");
-                    bodyParts.add(body);
-                }
-
-                this.bodySegments = bodyParts.toArray(new ModelPart[0]);
-                return;
-            }
+        if (root.hasChild("head")) {
+            this.head = root.getChild("head");
         }
+
+        if (root.hasChild("body")) {
+            List<ModelPart> bodyParts = new ArrayList<>();
+            ModelPart body = root.getChild("body");
+            bodyParts.add(body);
+
+            while (body.hasChild("body_segment")) {
+                body = body.getChild("body_segment");
+                bodyParts.add(body);
+            }
+
+            this.bodySegments = bodyParts.toArray(new ModelPart[0]);
+            return;
+        }
+
 
         this.bodySegments = new ModelPart[0];
     }

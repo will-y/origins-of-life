@@ -29,6 +29,9 @@ public class ModelGenerator {
     }
 
     private static void generateBody(EntityData.ModelData entityData, PartDefinition partDefinition) {
+        // Keep these not under main so I can color them differently
+        PartDefinition eyes = partDefinition.addOrReplaceChild("eyes", new CubeListBuilder(), PartPose.rotation(0, -Mth.PI / 2.0F, 0));
+
         PartDefinition main = partDefinition.addOrReplaceChild("main", new CubeListBuilder(), PartPose.rotation(0, -Mth.PI / 2.0F, 0));
         // Head + body
         List<PartDefinition> allBodyParts = new ArrayList<>();
@@ -57,7 +60,7 @@ public class ModelGenerator {
         // Decorations
         entityData.decorations().forEach((key, val) -> val.forEach(cubeSegment -> {
             CubeListBuilder builder = CubeListBuilder.create()
-                    .texOffs(5, 5)
+                    .texOffs(cubeSegment.u(), cubeSegment.v())
                     .addBox(0, 0,0, cubeSegment.x(), cubeSegment.y(), cubeSegment.z());
             if (key >= allBodyParts.size()) {
                 throw new IllegalArgumentException("Invalid decoration index: " + key + " for " + allBodyParts.size() + " body segments");
@@ -67,7 +70,14 @@ public class ModelGenerator {
                 throw new IllegalArgumentException("Decoration must have a name");
             }
 
-            allBodyParts.get(key).addOrReplaceChild(cubeSegment.name(), builder, PartPose.offsetAndRotation(cubeSegment.x0() - entityData.sizes().centerX(), cubeSegment.y0(), cubeSegment.z0() - entityData.sizes().centerZ(), cubeSegment.xRot(), cubeSegment.yRot(), cubeSegment.zRot()));
+            PartPose partPose = PartPose.offsetAndRotation(cubeSegment.x0() - entityData.sizes().centerX(), cubeSegment.y0(), cubeSegment.z0() - entityData.sizes().centerZ(), cubeSegment.xRot(), cubeSegment.yRot(), cubeSegment.zRot());
+            // Use this for unattached decorations. For know hard coded to eyes
+            if (key == -1) {
+                eyes.addOrReplaceChild(cubeSegment.name(), builder, partPose);
+            } else {
+                allBodyParts.get(key).addOrReplaceChild(cubeSegment.name(), builder, partPose);
+            }
+
         }));
     }
 
@@ -93,8 +103,7 @@ public class ModelGenerator {
     static {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
-
-        PartDefinition main = root.addOrReplaceChild(
+        root.addOrReplaceChild(
                 "body",
                 CubeListBuilder.create()
                         .texOffs(0, 0)

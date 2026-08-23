@@ -25,6 +25,7 @@ public final class EntityData {
             Codec.unboundedMap(Codec.STRING, Codec.FLOAT).fieldOf("animationData").forGetter(EntityData::animationData),
             Codec.unboundedMap(Attribute.CODEC, Codec.DOUBLE).fieldOf("defaultAttributes").forGetter(EntityData::defaultAttributes),
             Codec.INT.fieldOf("color").forGetter(EntityData::color),
+            Codec.INT.fieldOf("eyeColor").forGetter(EntityData::eyeColor),
             Behavior.CODEC.listOf().fieldOf("behaviors").forGetter(EntityData::behaviors)
     ).apply(instance, EntityData::new));
 
@@ -33,6 +34,7 @@ public final class EntityData {
             ByteBufCodecs.map(HashMap::new, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.FLOAT), EntityData::animationData,
             ByteBufCodecs.map(HashMap::new, Attribute.STREAM_CODEC, ByteBufCodecs.DOUBLE), EntityData::defaultAttributes,
             ByteBufCodecs.INT, EntityData::color,
+            ByteBufCodecs.INT, EntityData::eyeColor,
             Behavior.STREAM_CODEC.apply(ByteBufCodecs.list()), EntityData::behaviors,
             EntityData::new);
 
@@ -41,21 +43,23 @@ public final class EntityData {
     private final Map<Holder<Attribute>, Double> defaultAttributes;
     // TODO: Might move to cube segment eventually? Or move to something else idk
     private final int color;
+    private final int eyeColor;
     /// List of behaviors in priority order. These will create goals and target goals for the entity
     private final List<Behavior> behaviors;
 
     public EntityData(CubeSegment head, List<CubeSegment> bodySegments, Map<Integer, List<CubeSegment>> decorations,
                       Map<String, Float> animationData, Map<Holder<Attribute>, Double> defaultAttributes, int color,
-                      List<Behavior> behaviors) {
-        this(new ModelData(head, bodySegments, decorations), animationData, defaultAttributes, color, behaviors);
+                      int eyeColor, List<Behavior> behaviors) {
+        this(new ModelData(head, bodySegments, decorations), animationData, defaultAttributes, color, eyeColor, behaviors);
     }
 
     public EntityData(ModelData modelData, Map<String, Float> animationData, Map<Holder<Attribute>, Double> defaultAttributes,
-                      int color, List<Behavior> behaviors) {
+                      int color, int eyeColor, List<Behavior> behaviors) {
         this.modelData = modelData;
         this.animationData = animationData;
         this.defaultAttributes = defaultAttributes;
         this.color = color;
+        this.eyeColor = eyeColor;
         this.behaviors = behaviors;
     }
 
@@ -73,6 +77,10 @@ public final class EntityData {
 
     public int color() {
         return color;
+    }
+
+    public int eyeColor() {
+        return eyeColor;
     }
 
     public List<Behavior> behaviors() {

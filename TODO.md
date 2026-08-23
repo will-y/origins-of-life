@@ -1,7 +1,4 @@
 # TODO
-## First Alpha Release
-- Textures
-  - Eyes / other facial features
 
 ## Modjam End
 - Hitboxes (y is messed up)
