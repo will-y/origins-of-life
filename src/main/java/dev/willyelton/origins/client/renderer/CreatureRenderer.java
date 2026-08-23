@@ -7,13 +7,13 @@ import dev.willyelton.origins.client.model.ModelGenerator;
 import dev.willyelton.origins.common.entity.CreatureEntity;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.resources.Identifier;
 
 import static dev.willyelton.origins.OriginsOfLife.rl;
 
-public class CreatureRenderer extends LivingEntityRenderer<CreatureEntity, CreatureRenderState, CreatureModel> {
+public class CreatureRenderer extends MobRenderer<CreatureEntity, CreatureRenderState, CreatureModel> {
 
     public static final Identifier TEXTURE = rl("textures/entity/creature/background.png");
 
@@ -36,7 +36,6 @@ public class CreatureRenderer extends LivingEntityRenderer<CreatureEntity, Creat
     public void extractRenderState(CreatureEntity entity, CreatureRenderState state, float partialTicks) {
         super.extractRenderState(entity, state, partialTicks);
         state.entityData = entity.entityData();
-
     }
 
     @Override

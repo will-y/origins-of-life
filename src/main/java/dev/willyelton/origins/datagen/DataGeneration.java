@@ -22,11 +22,13 @@ public class DataGeneration {
         PackOutput packOutput = generator.getPackOutput();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
-        generator.addProvider(true, new OriginOfLifeModels(packOutput));
+        generator.addProvider(true, new OriginsOfLifeModels(packOutput));
 
         generator.addProvider(true, new LootTableProvider(packOutput, Collections.emptySet(),
-                List.of(new LootTableProvider.SubProviderEntry(OriginOfLifeLootTables::new, LootContextParamSets.BLOCK)), event.getLookupProvider()));
+                List.of(new LootTableProvider.SubProviderEntry(OriginsOfLifeLootTables::new, LootContextParamSets.BLOCK)), event.getLookupProvider()));
 
         generator.addProvider(true, new OriginsOfLifeFluidTagsGen(packOutput, lookupProvider));
+
+        generator.addProvider(true, new OriginsOfLifeRecipes.Runner(packOutput, lookupProvider));
     }
 }

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "i": "minecraft:iron_bars"
+  },
+  "pattern": [
+    "iii",
+    "i i",
+    "iii"
+  ],
+  "result": {
+    "id": "origins_of_life:cage"
+  }
+}

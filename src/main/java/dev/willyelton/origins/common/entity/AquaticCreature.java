@@ -37,8 +37,6 @@ public class AquaticCreature extends CreatureEntity {
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(0, new PanicGoal(this, 1.25));
-//        this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, Player.class, 8.0F, 1.2, 3, EntitySelector.NO_SPECTATORS));
-
 
         int prio = 1;
         int targetPrio = 0;

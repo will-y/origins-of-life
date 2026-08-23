@@ -6,6 +6,8 @@
   "item.origins_of_life.cage": "Cage",
   "block.origins_of_life.fossil_block_deepslate": "Fossil Cluster",
   "block.origins_of_life.fossil_block_sulfur": "Fossil Cluster",
+  "block.origins_of_life.fossil_block_clay": "Fossil Cluster",
+  "block.origins_of_life.primordial_soup": "Primordial Soup",
   "tab.origins_of_life": "Origins of Life",
   "lore.origins_of_life.fossil_dirty": "Clean off in a cauldron!",
   "lore.origins_of_life.fossil_clean": "Try throwing in some primordial soup!",

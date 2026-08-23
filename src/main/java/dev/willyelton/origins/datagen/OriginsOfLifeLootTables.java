@@ -9,8 +9,8 @@ import net.minecraft.world.level.block.Block;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class OriginOfLifeLootTables extends VanillaBlockLoot {
-    public OriginOfLifeLootTables(HolderLookup.Provider registries) {
+public class OriginsOfLifeLootTables extends VanillaBlockLoot {
+    public OriginsOfLifeLootTables(HolderLookup.Provider registries) {
         super(registries);
     }
 

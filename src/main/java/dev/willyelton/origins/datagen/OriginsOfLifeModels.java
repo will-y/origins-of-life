@@ -17,8 +17,8 @@ import net.neoforged.neoforge.client.model.item.DynamicFluidContainerModel;
 
 import java.util.Optional;
 
-public class OriginOfLifeModels extends ModelProvider {
-    public OriginOfLifeModels(PackOutput output) {
+public class OriginsOfLifeModels extends ModelProvider {
+    public OriginsOfLifeModels(PackOutput output) {
         super(output, OriginsOfLife.MODID);
     }
 

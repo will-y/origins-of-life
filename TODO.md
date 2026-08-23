@@ -2,18 +2,10 @@
 ## First Alpha Release
 - Textures
   - Eyes / other facial features
-- Some behavior in entity data
-  - Goals:
-    - AvoidEntityGoal (player)
-    - DolphinJumpGoal?
-    - FollowMobGoal (player)
-    - Some attack goal
-    - FindWaterGoal (always?)
-- Readme / page for curse
-- Redo EntityData into more subobjects?
 
 ## Modjam End
 - Hitboxes (y is messed up)
+  - Scale i think is wrong
 - Head
   - Add different head shapes
   - Change body count offset by one so it is more common to just have a head again?
@@ -30,6 +22,7 @@
 - Color per body part?
 - EntityDataGenerator configurations
 - Some way to view stuff about entities
+- More behavior (other mob behavior)
 
 ## Maybe at Some Point
 - Decorations
