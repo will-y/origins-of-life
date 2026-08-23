@@ -22,7 +22,7 @@ displayName="${mod_name}" #mandatory
 authors="Eyeroh"
 
 description='''
-Example mod description.
+Find fossils and primordial soup deep underground. Clean your fossils and throw them in the soup to generate random mobs!
 '''
 
 #[[mixins]]

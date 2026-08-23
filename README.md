@@ -43,6 +43,9 @@ There are currently a few decorations implemented:
 - Tails
   - These are at the end of the body, and animate up and down for swimming
 
+### Color
+Creatures will get a random color for their body, and also a random color for their eyes.
+
 ### Animations
 Some creatures can have different animations. Currently, this includes:
 - Speed of the swim animation

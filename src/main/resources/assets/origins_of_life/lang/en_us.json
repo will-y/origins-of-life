@@ -16,5 +16,7 @@
   "tooltip.origins_of_life.cage_not_owned": "Cannot pick up an animal you don't own!",
   "tooltip.origins_of_life.cage_blacklist": "This entity cannot be picked up!",
   "tooltip.origins_of_life.cage_contains": "Contains: %s",
-  "entity.origins_of_life.aquatic_creature": "Aquatic Creature"
+  "entity.origins_of_life.aquatic_creature": "Aquatic Creature",
+  "origins_of_life.configuration.fossil_transform_ticks": "Fossil Transform Ticks",
+  "origins_of_life.configuration.cage_pickup_other_entities": "Cage Pickup Other Entities"
 }
