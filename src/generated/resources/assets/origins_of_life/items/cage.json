@@ -9,6 +9,6 @@
       "type": "minecraft:model",
       "model": "origins_of_life:item/cage_full"
     },
-    "property": "origins_of_life:fossil"
+    "property": "origins_of_life:cage"
   }
 }

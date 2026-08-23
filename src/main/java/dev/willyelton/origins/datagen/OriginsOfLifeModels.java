@@ -2,6 +2,7 @@ package dev.willyelton.origins.datagen;
 
 import dev.willyelton.origins.OriginsOfLife;
 import dev.willyelton.origins.client.model.property.HasEntityDataProperty;
+import dev.willyelton.origins.client.model.property.HasVanillaEntityDataProperty;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
@@ -65,7 +66,7 @@ public class OriginsOfLifeModels extends ModelProvider {
 
         itemModels.itemModelOutput.accept(fossilItem, new ConditionalItemModel.Unbaked(
                 Optional.empty(),
-                new HasEntityDataProperty(),
+                new HasVanillaEntityDataProperty(),
                 full,
                 empty));
     }
