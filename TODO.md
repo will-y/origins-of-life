@@ -1,6 +1,7 @@
 # TODO
 
 ## Modjam End
+- Test on dedicated server
 - Hitboxes (y is messed up)
   - Scale i think is wrong
 - Head
@@ -16,7 +17,6 @@
   - At least get attributes working
   - Model combinations if time
 - Item and block textures
-- Color per body part?
 - EntityDataGenerator configurations
 - Some way to view stuff about entities
 - More behavior (other mob behavior)
@@ -28,3 +28,4 @@
 - Different way of getting mobs
   - Evolution Simulation
     - Adding different items in soup does something
+- Color per body part?

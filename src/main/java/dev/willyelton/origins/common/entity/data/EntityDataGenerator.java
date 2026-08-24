@@ -1,5 +1,6 @@
 package dev.willyelton.origins.common.entity.data;
 
+import dev.willyelton.origins.Config;
 import dev.willyelton.origins.common.entity.data.behavior.Behavior;
 import dev.willyelton.origins.common.entity.data.behavior.PlayerBehavior;
 import dev.willyelton.origins.util.random.Distribution;
@@ -29,7 +30,7 @@ public class EntityDataGenerator {
     private static final int[] BODY_NEXT_X_SIZE_WEIGHTS = new int[]{60, 70, 80, 90, 10};
     // -3
     private static final int[] BODY_NEXT_Y_Z_SIZE_WEIGHTS = new int[]{60, 70, 80, 90, 10};
-    private static final int[] COLORS = new int[] {
+    public static final List<Integer> DEFAULT_BODY_COLORS = List.of(
             -15590866, // Abyssal Navy (0xFF121A2E)
             -15193275, // Deep Trench (0xFF182B45)
             -15844541, // Midnight Cyan (0xFF0E3B43)
@@ -50,9 +51,9 @@ public class EntityDataGenerator {
             -7829368,  // Pale Ash Grey (0xFF888888)
             -21444,    // Bioluminescent Yellow (0xFFFFAB1C)
             -3404746   // Angler Crimson Red (0xFFCC0836)
-    };
+    );
 
-    private static final int[] EYE_COLORS = {
+    public static final List<Integer> DEFAULT_EYE_COLORS = List.of(
             0xFF00F5FF, // Glow Cyan
             0xFF0A1172, // Deep Sea Blue
             0xFFFF1493, // Bioluminescent Pink
@@ -66,7 +67,7 @@ public class EntityDataGenerator {
             0xFFFFFFFF, // Pure White
             0xFF000000,  // Pure Black
             -3404746   // Angler Crimson Red (0xFFCC0836)
-    };
+    );
 
     public static EntityData empty() {
         return new EntityData(new EntityData.CubeSegment(0, 0, 0, 1, 1, 1, 0, 0), new ArrayList<>(),
@@ -105,7 +106,7 @@ public class EntityDataGenerator {
         }
 
         return new EntityData(head, bodySegments, decorations, generateAnimationData(rand), generateDefaultAttributes(rand),
-                randomElement(rand, COLORS), randomElement(rand, EYE_COLORS), generateBehaviors(rand));
+                randomElement(rand, Config.BODY_COLORS.get()), randomElement(rand, Config.EYE_COLORS.get()), generateBehaviors(rand));
     }
 
     private static EntityData.CubeSegment nextSegment(EntityData.CubeSegment current, Distribution<Integer> xDistribution,
@@ -135,10 +136,10 @@ public class EntityDataGenerator {
         var uv = generateUV(rand);
 
         // Top fins
-        if (rand.nextFloat() > 0.3) {
+        if (rand.nextFloat() < Config.TOP_FIN_PROBABILITY.get()) {
             float zRot = (rand.nextInt(20, 90)) * Mth.PI / 180.0F;
             for (int i = 0; i < bodySegments.size(); i++) {
-                if (rand.nextFloat() > 0.1) {
+                if (rand.nextFloat() < Config.TOP_FIN_PER_SEGMENT_PROBABILITY.get()) {
                     EntityData.CubeSegment segment = bodySegments.get(i);
                     int y = rand.nextInt(1, segment.x() * 2 / 3 + 1);
                     int z = rand.nextInt(1, segment.z() / 3 + 1);
@@ -153,9 +154,9 @@ public class EntityDataGenerator {
         }
 
         // Side fins
-        if (rand.nextFloat() > 0.4) {
+        if (rand.nextFloat() < Config.SIDE_FIN_PROBABILITY.get()) {
             for (int i = 0; i < bodySegments.size(); i++) {
-                if (rand.nextFloat() > 0.3) {
+                if (rand.nextFloat() < Config.SIDE_FIN_PER_SEGMENT_PROBABILITY.get()) {
                     EntityData.CubeSegment segment = bodySegments.get(i);
                     int x = Math.max(rand.nextInt(segment.x() / 4, segment.x() * 3 / 4), 1);
                     int y = rand.nextInt(1, 4);
@@ -172,10 +173,10 @@ public class EntityDataGenerator {
     }
 
     private static void generateHeadFeatures(RandomSource rand, EntityData.CubeSegment head, Map<Integer, List<EntityData.CubeSegment>> decorations) {
-        if (rand.nextFloat() > 0.3) {
+        // Nose
+        if (rand.nextFloat() < Config.NOSE_PROBABILITY.get()) {
             IntegerNormalDistribution noseXDistribution = new IntegerNormalDistribution(rand, 4, 3);
             IntegerNormalDistribution noseYZDistribution = new IntegerNormalDistribution(rand, 3, 4);
-            // Nose
             int x = Mth.clamp(noseXDistribution.nextValue(), 1, head.x());
             int y = Mth.clamp(noseYZDistribution.nextValue(), 1, head.y() / 2);
             int z = Mth.clamp(noseYZDistribution.nextValue(), 1, head.z() / 2);
@@ -191,7 +192,7 @@ public class EntityDataGenerator {
 
     private static void generateTailFeatures(RandomSource rand, EntityData.CubeSegment lastBodySegment, int lastBodySegmentIndex, Map<Integer, List<EntityData.CubeSegment>> decorations) {
         // TODO: Tails should make sense (if hor. swim, vertical tail...)
-        if (rand.nextFloat() > 0.6) {
+        if (rand.nextFloat() < Config.TAIL_PROBABILITY.get()) {
             // Flat tail
             IntegerNormalDistribution tailXDistribution = new IntegerNormalDistribution(rand, lastBodySegment.x(), lastBodySegment.x() / 2.0F);
             IntegerNormalDistribution tailYDistribution = new IntegerNormalDistribution(rand, 2, 1);
@@ -215,14 +216,14 @@ public class EntityDataGenerator {
 
     // TODO: Sometimes eyes can overlay with noses
     private static void generateEyes(RandomSource rand, EntityData.CubeSegment head, Map<Integer, List<EntityData.CubeSegment>> decorations) {
-        if (rand.nextFloat() > 0.1) {
+        if (rand.nextFloat() < Config.EYES_PROBABILITY.get()) {
             Distribution<Integer> eyeXZDistribution = new IntegerNormalDistribution(rand, 4, 1);
             Distribution<Integer> eyeXDistribution = new WeightedDistribution(rand, new int[] {0, 75, 15, 10});
             int x = Mth.clamp(eyeXDistribution.nextValue(), 1, head.x() / 2);
             var uv = generateUV(rand);
 
             // One eye
-            if (rand.nextFloat() > 0.8) {
+            if (rand.nextFloat() < Config.ONE_EYE_PROBABILITY.get()) {
                 int yz = Mth.clamp(eyeXZDistribution.nextValue() * 2, 1, head.z() / 3);
                 float yOffset = rand.nextFloat() * (head.y() / 3.0F - yz / 2.0F);
                 float y0 = head.y0() + yOffset;
@@ -307,9 +308,9 @@ public class EntityDataGenerator {
         return Pair.of(u, v);
     }
 
-    private static int randomElement(RandomSource rand, int[] array) {
-        int index = rand.nextInt(array.length);
-        return array[index];
+    private static <T> T randomElement(RandomSource rand, List<? extends T> list) {
+        int index = rand.nextInt(list.size());
+        return list.get(index);
     }
 
     private static List<Behavior> generateBehaviors(RandomSource rand) {

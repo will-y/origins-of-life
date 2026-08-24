@@ -156,7 +156,7 @@ public class OriginsOfLife {
         TABS.register(modEventBus);
         DataComponents.COMPONENTS.register(modEventBus);
 
-        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        modContainer.registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);
 
         Behavior.bootstrap();
     }

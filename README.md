@@ -25,6 +25,24 @@ If you throw your cleaned off fossils in a pool of primordial soup, it will even
 ### Capture your new creature in a cage!
 ![Cage Crafting](https://github.com/will-y/origins-of-life/raw/main/img/cage.png)
 
+### Configurations
+Some features of how a creature is generated (and a few other aspects of the mod) can be configured:
+#### General
+- `cage_pickup_other_entities` (false): Allows the player to use the cage to pick up entities not from this mod
+- `fossil_transform_ticks` (400): Ticks that it takes to transform a fossil into a creature
+
+#### Creature Generation
+- `top_fin_probability` (0.7): Probability that a creature has top fins
+- `top_fin_per_segment_probability` (0.9): Probability that a specific body segment has a top fin, given they have any
+- `side_fin_probability` (0.6): Probability that a creature has side fins
+- `side_fin_per_segment_probability` (0.7): Probability that a specific body segment has side fins, given they have any
+- `nose_probability` (0.7): Probability that a creature has a nose
+- `tail_probability` (0.4): Probability that a creature has a tail
+- `eyes_probability` (0.9): Probability that a creature has eyes
+- `one_eye_probability` (0.2): Probability that a creature has only one eye, given it has any
+- `body_colors`: Possible Colors for Creature Bodies. Must be an integer in the form AARRGGBB
+- `eye_colors`: Possible Colors for Creature Eyes. Must be an integer in the form AARRGGBB
+
 ## Creature Information
 Currently, only aquatic creatures are implemented. This means that every time you spawn a new random creature, it will 
 have to live underwater.
