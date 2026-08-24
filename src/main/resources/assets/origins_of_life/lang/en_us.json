@@ -18,5 +18,17 @@
   "tooltip.origins_of_life.cage_contains": "Contains: %s",
   "entity.origins_of_life.aquatic_creature": "Aquatic Creature",
   "origins_of_life.configuration.fossil_transform_ticks": "Fossil Transform Ticks",
-  "origins_of_life.configuration.cage_pickup_other_entities": "Cage Pickup Other Entities"
+  "origins_of_life.configuration.cage_pickup_other_entities": "Cage Pickup Other Entities",
+  "origins_of_life.configuration.top_fin_probability": "Top Fin Probability",
+  "origins_of_life.configuration.side_fin_probability": "Side Fin Probability",
+  "origins_of_life.configuration.tail_probability": "Tail Probability",
+  "origins_of_life.configuration.body_colors": "Body Colors",
+  "origins_of_life.configuration.general": "General Settings",
+  "origins_of_life.configuration.nose_probability": "Nose Probability",
+  "origins_of_life.configuration.entity_generation": "Entity Generation Settings",
+  "origins_of_life.configuration.top_fin_per_segment_probability": "Top Fin Per Segment Probability",
+  "origins_of_life.configuration.side_fin_per_segment_probability": "Side Fin Per Segment Probability",
+  "origins_of_life.configuration.eye_colors": "Eye Colors",
+  "origins_of_life.configuration.eyes_probability": "Eyes Probability",
+  "origins_of_life.configuration.one_eye_probability": "One Eye Probability"
 }
