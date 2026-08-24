@@ -60,8 +60,8 @@ public class OriginsOfLife {
 
     // Blocks
     public static final DeferredHolder<Block, Block> FOSSIL_BLOCK_DEEPSLATE = BLOCKS.registerBlock("fossil_block_deepslate", Block::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE));
-    public static final DeferredHolder<Block, Block> FOSSIL_BLOCK_SULFUR = BLOCKS.registerBlock("fossil_block_sulfur", Block::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE));
-    public static final DeferredHolder<Block, Block> FOSSIL_BLOCK_CLAY = BLOCKS.registerBlock("fossil_block_clay", Block::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE));
+    public static final DeferredHolder<Block, Block> FOSSIL_BLOCK_SULFUR = BLOCKS.registerBlock("fossil_block_sulfur", Block::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.SULFUR));
+    public static final DeferredHolder<Block, Block> FOSSIL_BLOCK_CLAY = BLOCKS.registerBlock("fossil_block_clay", Block::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.CLAY));
 
     // Block Items
     public static final DeferredItem<BlockItem> FOSSIL_BLOCK_ITEM_DEEPSLATE = ITEMS.registerSimpleBlockItem(FOSSIL_BLOCK_DEEPSLATE);

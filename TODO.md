@@ -1,6 +1,7 @@
 # TODO
 
 ## Modjam End
+- Tool Tags
 - Test on dedicated server
 - Hitboxes (y is messed up)
   - Scale i think is wrong
@@ -16,8 +17,6 @@
 - Breeding 2 creatures together
   - At least get attributes working
   - Model combinations if time
-- Item and block textures
-- EntityDataGenerator configurations
 - Some way to view stuff about entities
 - More behavior (other mob behavior)
 
