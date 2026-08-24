@@ -18,7 +18,6 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.component.ItemLore;
@@ -134,7 +133,7 @@ public class OriginsOfLife {
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TAB = TABS.register("origins_of_life_tab", () ->
             CreativeModeTab.builder()
                     .title(Component.translatable("tab.origins_of_life"))
-                    .icon(() -> new ItemStack(AQUATIC_SPAWN_EGG.get()))
+                    .icon(() -> cleanFossil(null))
                     .displayItems((params, output) -> {
                         output.accept(AQUATIC_SPAWN_EGG);
                         output.accept(FOSSIL_BLOCK_ITEM_DEEPSLATE);
