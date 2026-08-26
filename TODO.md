@@ -1,15 +1,7 @@
 # TODO
 
 ## Modjam End
-- Tool Tags
 - Test on dedicated server
-- Hitboxes (y is messed up)
-  - Scale i think is wrong
-- Head
-  - Add different head shapes
-  - Change body count offset by one so it is more common to just have a head again?
-- Swim animations
-  - Change based on movement speed
 - Some way to record entity data and then clone
   - Scraper + Genetic Sample Item
   - Craft with something to then throw in soup?
@@ -30,3 +22,8 @@
   - Evolution Simulation
     - Adding different items in soup does something
 - Color per body part?
+- Swim animations
+  - Change based on movement speed
+- Head
+  - Add different head shapes
+  - Change body count offset by one so it is more common to just have a head again?
