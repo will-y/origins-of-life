@@ -14,6 +14,8 @@
   - Scraper + Genetic Sample Item
   - Craft with something to then throw in soup?
 - Display Case
+  - Screenshots
+  - Crafting recipe in readme
 - Breeding 2 creatures together
   - At least get attributes working
   - Model combinations if time

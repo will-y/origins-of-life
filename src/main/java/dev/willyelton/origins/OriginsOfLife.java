@@ -14,15 +14,20 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Util;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.item.component.ItemLore;
+import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -48,6 +53,7 @@ import org.slf4j.Logger;
 import java.util.List;
 
 import static dev.willyelton.origins.common.event.RegisterCauldronInteractionEvent.cleanFossil;
+import static net.minecraft.world.item.component.Consumables.defaultFood;
 
 @Mod(OriginsOfLife.MODID)
 public class OriginsOfLife {
@@ -94,6 +100,15 @@ public class OriginsOfLife {
             properties -> properties.component(net.minecraft.core.component.DataComponents.LORE, new ItemLore(
                     List.of(Component.translatable("lore.origins_of_life.fossil_dirty")))));
     public static final DeferredItem<CageItem> CAGE = ITEMS.registerItem("cage", CageItem::new);
+    public static final Consumable RAW_MEAT_CONSUMABLE = defaultFood()
+            .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.POISON, 100, 0), 0.6F))
+            .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.HUNGER, 600, 0), 0.8F))
+            .build();
+
+    public static final DeferredItem<Item> RAW_MEAT = ITEMS.registerSimpleItem("mystery_meat_raw", properties ->  properties
+            .food(Foods.BEEF, RAW_MEAT_CONSUMABLE)
+            .component(net.minecraft.core.component.DataComponents.LORE, new ItemLore(List.of(Component.translatable("lore.origins_of_life.mystery_meat_raw")))));
+    public static final DeferredItem<Item> COOKED_MEAT = ITEMS.registerSimpleItem("mystery_meat", properties ->  properties.food(Foods.COOKED_BEEF));
 
     // Fluids
     public static final DeferredHolder<FluidType, FluidType> PRIMORDIAL_SOUP_TYPE = FLUID_TYPES.register(
@@ -155,6 +170,8 @@ public class OriginsOfLife {
                         output.accept(PRIMORDIAL_SOUP_BUCKET);
                         output.accept(CAGE);
                         output.accept(DISPLAY_CASE_ITEM);
+                        output.accept(RAW_MEAT);
+                        output.accept(COOKED_MEAT);
                     })
                     .build());
 

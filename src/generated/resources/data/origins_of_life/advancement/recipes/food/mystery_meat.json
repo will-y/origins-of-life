@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_mystery_meat": {
+      "conditions": {
+        "items": [
+          {
+            "items": "origins_of_life:mystery_meat_raw"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "origins_of_life:mystery_meat"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_mystery_meat"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "origins_of_life:mystery_meat"
+    ]
+  }
+}

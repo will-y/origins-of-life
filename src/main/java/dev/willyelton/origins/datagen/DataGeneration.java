@@ -28,7 +28,8 @@ public class DataGeneration {
         generator.addProvider(true, blockTags);
 
         generator.addProvider(true, new LootTableProvider(packOutput, Collections.emptySet(),
-                List.of(new LootTableProvider.SubProviderEntry(OriginsOfLifeLootTables::new, LootContextParamSets.BLOCK)), event.getLookupProvider()));
+                List.of(new LootTableProvider.SubProviderEntry(OriginsOfLifeLootTables::new, LootContextParamSets.BLOCK),
+                        new LootTableProvider.SubProviderEntry(OriginsOfLifeEntityLoot::new, LootContextParamSets.ENTITY)), lookupProvider));
 
         generator.addProvider(true, new OriginsOfLifeFluidTagsGen(packOutput, lookupProvider));
 

@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smoking",
+  "category": "food",
+  "experience": 0.35,
+  "ingredient": "origins_of_life:mystery_meat_raw",
+  "result": {
+    "id": "origins_of_life:mystery_meat"
+  }
+}

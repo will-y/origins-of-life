@@ -43,6 +43,8 @@ public class OriginsOfLifeModels extends ModelProvider {
                 true,
                 true));
         itemModels.generateFlatItem(OriginsOfLife.AQUATIC_SPAWN_EGG.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(OriginsOfLife.RAW_MEAT.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(OriginsOfLife.COOKED_MEAT.get(), ModelTemplates.FLAT_ITEM);
 
         generateFossil(itemModels);
         generateCage(itemModels);
