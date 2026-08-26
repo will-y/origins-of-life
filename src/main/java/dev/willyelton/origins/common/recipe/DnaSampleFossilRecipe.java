@@ -16,7 +16,7 @@ public class DnaSampleFossilRecipe extends CustomRecipe {
 
     @Override
     public boolean matches(CraftingInput input, Level level) {
-        if (input.size() != 2) {
+        if (input.items().stream().filter(s -> !s.isEmpty()).count() != 2) {
             return false;
         }
 

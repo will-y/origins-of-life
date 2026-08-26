@@ -61,6 +61,11 @@ public abstract class CreatureEntity extends PathfinderMob implements IEntityWit
     }
 
     @Override
+    public boolean isPersistenceRequired() {
+        return true;
+    }
+
+    @Override
     protected void defineSynchedData(SynchedEntityData.Builder entityData) {
         super.defineSynchedData(entityData);
 //        entityData.define(ENTITY_DATA_STATE, EntityDataGenerator.empty());

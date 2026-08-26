@@ -37,6 +37,7 @@ public class DisplayCaseBlockEntityRenderer implements BlockEntityRenderer<Displ
             state.entityData = blockEntity.entityData();
             if (blockEntity.displayEntity() != null) {
                 state.displayEntity = entityRenderer.extractEntity(blockEntity.displayEntity(), partialTicks);
+                state.displayEntity.lightCoords = state.lightCoords;
             }
             Player player = Minecraft.getInstance().player;
             if (player != null) {

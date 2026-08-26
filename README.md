@@ -25,6 +25,28 @@ If you throw your cleaned off fossils in a pool of primordial soup, it will even
 ### Capture your new creature in a cage!
 ![Cage Crafting](https://github.com/will-y/origins-of-life/raw/main/img/cage.png)
 
+### Display Case
+Displace cases are blocks that you can use to display any creature you want.
+
+To put a creature in the case, just right click a filled cage on the display case.
+
+To remove a creature, either break the case (this will spawn the entity in the world), or use an empty cage.
+![Display Case Crafting](https://github.com/will-y/origins-of-life/raw/main/img/display_case_crafting.png)
+![Display Case](https://github.com/will-y/origins-of-life/raw/main/img/display_case.png)
+
+### Cloning
+You can clone your creatures!
+
+First craft a scalpel
+![Scalpel Crafting](https://github.com/will-y/origins-of-life/raw/main/img/scalpel_crafting.png)
+
+Right-clicking on a creature will deal half a heart of damage to them and give you a DNA Sample.
+
+Combine this DNA sample with cobblestone, cobbled deepslate, or blackstone to get a fossil.
+![DNA Fossil Crafting](https://github.com/will-y/origins-of-life/raw/main/img/dna_fossil_crafting.png)
+
+This fossil can then be used to grow an exact copy of your creature in primordial soup.
+
 ### Configurations
 Some features of how a creature is generated (and a few other aspects of the mod) can be configured:
 #### General

@@ -2,9 +2,6 @@
 
 ## Modjam End
 - Test on dedicated server
-- Display Case
-  - Screenshots
-  - Crafting recipe in readme
 - Breeding 2 creatures together
   - At least get attributes working
   - Model combinations if time

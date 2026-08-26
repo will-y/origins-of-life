@@ -1,4 +1,9 @@
 # Origins of Life Changelog
+## 26.2.0.5-beta
+- Fixes lighting in display cases
+- Fixes creatures despawning
+- Fixes DNA Sample -> Fossil recipe not working as intended
+
 ## 26.2.0.4-beta
 - Adds Mystery Meat
   - Eating raw meat will apply poison and hunger
