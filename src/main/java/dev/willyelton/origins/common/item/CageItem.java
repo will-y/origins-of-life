@@ -11,7 +11,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ProblemReporter;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -24,6 +23,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.TypedEntityData;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.TagValueInput;
@@ -42,19 +42,27 @@ public class CageItem extends Item {
     }
 
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
-        BlockHitResult blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
+    public InteractionResult useOn(UseOnContext context) {
+        Level level = context.getLevel();
+        Player player = context.getPlayer();
 
-        if (blockHitResult.getType() == HitResult.Type.BLOCK) {
-            BlockPos blockPos = blockHitResult.getBlockPos();
-            Direction direction = blockHitResult.getDirection();
-            BlockPos relativeBlockPos = blockPos.relative(direction);
+        if (player != null && !level.isClientSide()) {
+            ItemStack stack = context.getItemInHand();
+            BlockHitResult blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
 
-            if (!level.mayInteract(player, blockPos) || !player.mayUseItemAt(relativeBlockPos, direction, stack)) {
-                return InteractionResult.FAIL;
-            } else if (level instanceof ServerLevel serverLevel && player instanceof ServerPlayer serverPlayer) {
-                this.releaseMob(stack, serverLevel, relativeBlockPos, serverPlayer);
+            if (blockHitResult.getType() == HitResult.Type.BLOCK) {
+                BlockPos blockPos = blockHitResult.getBlockPos();
+                Direction direction = blockHitResult.getDirection();
+                BlockPos relativeBlockPos = blockPos.relative(direction);
+
+                if (!level.mayInteract(player, blockPos) || !player.mayUseItemAt(relativeBlockPos, direction, stack)) {
+                    return InteractionResult.FAIL;
+                } else if (level instanceof ServerLevel serverLevel && player instanceof ServerPlayer serverPlayer) {
+                    if (this.releaseMob(stack, serverLevel, relativeBlockPos, serverPlayer)) {
+                        return InteractionResult.SUCCESS_SERVER;
+                    }
+
+                }
             }
         }
 
@@ -91,6 +99,10 @@ public class CageItem extends Item {
             stack.set(DataComponents.ENTITY_DATA, TypedEntityData.of(livingEntity.getType(), valueOutput.buildResult()));
             stack.set(DataComponents.LORE, new ItemLore(List.of(Component.translatable("tooltip.origins_of_life.cage_contains", livingEntity.getDisplayName()))));
             stack.set(dev.willyelton.origins.common.DataComponents.INSERT_TIME, level.getGameTime());
+            if (livingEntity instanceof CreatureEntity creature) {
+                stack.set(dev.willyelton.origins.common.DataComponents.ENTITY_DATA, creature.entityData());
+            }
+
             livingEntity.discard();
 
             return true;
@@ -103,9 +115,9 @@ public class CageItem extends Item {
         return false;
     }
 
-    public void releaseMob(ItemStack stack, ServerLevel level, BlockPos pos, ServerPlayer player) {
+    public boolean releaseMob(ItemStack stack, ServerLevel level, BlockPos pos, ServerPlayer player) {
         if (level.getGameTime() <= stack.getOrDefault(dev.willyelton.origins.common.DataComponents.INSERT_TIME, 0L) + 3) {
-            return;
+            return false;
         }
 
         TypedEntityData<EntityType<?>> entityData = stack.get(DataComponents.ENTITY_DATA);
@@ -123,11 +135,12 @@ public class CageItem extends Item {
                     mob.playAmbientSound();
                 }
 
-                stack.remove(DataComponents.ENTITY_DATA);
-                stack.remove(DataComponents.LORE);
-                stack.remove(dev.willyelton.origins.common.DataComponents.INSERT_TIME);
+                removeDataComponents(stack);
+                return true;
             }
         }
+
+        return false;
     }
 
     private ProblemReporter reporter(@Nullable ServerPlayer player, Entity entity) {
@@ -136,5 +149,12 @@ public class CageItem extends Item {
         }
 
         return new ProblemReporter.ScopedCollector(player.problemPath(), OriginsOfLife.LOGGER);
+    }
+
+    public static void removeDataComponents(ItemStack stack) {
+        stack.remove(DataComponents.ENTITY_DATA);
+        stack.remove(DataComponents.LORE);
+        stack.remove(dev.willyelton.origins.common.DataComponents.INSERT_TIME);
+        stack.remove(dev.willyelton.origins.common.DataComponents.ENTITY_DATA);
     }
 }

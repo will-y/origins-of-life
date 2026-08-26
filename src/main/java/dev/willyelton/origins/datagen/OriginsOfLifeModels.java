@@ -29,6 +29,7 @@ public class OriginsOfLifeModels extends ModelProvider {
         blockModels.createTrivialCube(OriginsOfLife.FOSSIL_BLOCK_DEEPSLATE.get());
         blockModels.createTrivialCube(OriginsOfLife.FOSSIL_BLOCK_SULFUR.get());
         blockModels.createTrivialCube(OriginsOfLife.FOSSIL_BLOCK_CLAY.get());
+        blockModels.createTrivialCube(OriginsOfLife.DISPLAY_CASE.get());
 
         itemModels.itemModelOutput.accept(OriginsOfLife.PRIMORDIAL_SOUP_BUCKET.get(), new DynamicFluidContainerModel.Unbaked(
                 new DynamicFluidContainerModel.Textures(

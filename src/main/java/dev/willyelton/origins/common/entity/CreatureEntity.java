@@ -46,6 +46,7 @@ public abstract class CreatureEntity extends PathfinderMob implements IEntityWit
         }
 
         this.attributes = new AttributeMap(attributeBuilder.build());
+        refreshDimensions();
 
         // Redo some things in the living entity
         this.setHealth(this.getMaxHealth());
@@ -67,11 +68,13 @@ public abstract class CreatureEntity extends PathfinderMob implements IEntityWit
 
     @Override
     protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
         this.entityData = input.read("entity_data", EntityData.CODEC).orElse(EntityDataGenerator.empty());
     }
 
     @Override
     protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
         output.store("entity_data", EntityData.CODEC,  this.entityData);
     }
 
@@ -100,6 +103,7 @@ public abstract class CreatureEntity extends PathfinderMob implements IEntityWit
 
     @Override
     protected AABB makeBoundingBox(Vec3 position) {
+//        return this.dimensions.makeBoundingBox(position);
         EntityData.Sizes sizes = entityData.sizes();
         return new AABB(position.x - sizes.maxX() / 32.0, position.y, position.z - sizes.maxX() / 32.0,
                 position.x + sizes.maxX() / 32.0, position.y + sizes.maxY() / 16.0, position.z + sizes.maxX() / 32.0);

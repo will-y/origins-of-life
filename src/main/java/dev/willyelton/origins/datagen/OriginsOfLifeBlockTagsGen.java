@@ -17,7 +17,8 @@ public class OriginsOfLifeBlockTagsGen extends BlockTagsProvider {
     protected void addTags(HolderLookup.Provider registries) {
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(
                 OriginsOfLife.FOSSIL_BLOCK_DEEPSLATE.getKey(),
-                OriginsOfLife.FOSSIL_BLOCK_SULFUR.getKey());
+                OriginsOfLife.FOSSIL_BLOCK_SULFUR.getKey(),
+                OriginsOfLife.DISPLAY_CASE.getKey());
 
         tag(BlockTags.MINEABLE_WITH_SHOVEL).add(
                 OriginsOfLife.FOSSIL_BLOCK_CLAY.getKey());

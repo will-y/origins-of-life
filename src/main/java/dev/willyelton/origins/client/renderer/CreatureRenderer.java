@@ -40,6 +40,8 @@ public class CreatureRenderer extends MobRenderer<CreatureEntity, CreatureRender
     public void extractRenderState(CreatureEntity entity, CreatureRenderState state, float partialTicks) {
         super.extractRenderState(entity, state, partialTicks);
         state.entityData = entity.entityData();
+        // In cage it doesn't have a position
+        state.inCage = entity.getX() == 0 && entity.getY() == 0 && entity.getZ() == 0;
     }
 
     @Override

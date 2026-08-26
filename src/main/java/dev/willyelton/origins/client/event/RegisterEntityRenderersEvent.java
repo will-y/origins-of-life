@@ -2,6 +2,7 @@ package dev.willyelton.origins.client.event;
 
 import dev.willyelton.origins.OriginsOfLife;
 import dev.willyelton.origins.client.renderer.CreatureRenderer;
+import dev.willyelton.origins.client.renderer.blockentity.DisplayCaseBlockEntityRenderer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -12,5 +13,6 @@ public class RegisterEntityRenderersEvent {
     @SubscribeEvent
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(OriginsOfLife.AQUATIC_CREATURE.get(), CreatureRenderer::new);
+        event.registerBlockEntityRenderer(OriginsOfLife.DISPLAY_CASE_BLOCK_ENTITY.get(), DisplayCaseBlockEntityRenderer::new);
     }
 }

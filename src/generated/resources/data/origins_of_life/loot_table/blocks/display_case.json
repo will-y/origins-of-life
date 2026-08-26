@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "origins_of_life:display_case"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "origins_of_life:blocks/display_case"
+}

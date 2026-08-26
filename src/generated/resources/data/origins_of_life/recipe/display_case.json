@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "c": "origins_of_life:cage",
+    "i": "minecraft:glass"
+  },
+  "pattern": [
+    "iii",
+    "ici",
+    "iii"
+  ],
+  "result": {
+    "id": "origins_of_life:display_case"
+  }
+}

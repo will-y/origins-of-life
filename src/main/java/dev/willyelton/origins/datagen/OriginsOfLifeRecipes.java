@@ -28,6 +28,15 @@ public class OriginsOfLifeRecipes extends RecipeProvider {
                 .define('i', Items.IRON_BARS)
                 .unlockedBy("has_fossil", HAS_FOSSIL)
                 .save(output);
+
+        shaped(RecipeCategory.MISC, OriginsOfLife.DISPLAY_CASE_ITEM)
+                .pattern("iii")
+                .pattern("ici")
+                .pattern("iii")
+                .define('i', Items.GLASS)
+                .define('c', OriginsOfLife.CAGE)
+                .unlockedBy("has_fossil", HAS_FOSSIL)
+                .save(output);
     }
 
     public static class Runner extends RecipeProvider.Runner {

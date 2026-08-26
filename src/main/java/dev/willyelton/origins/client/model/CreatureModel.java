@@ -50,8 +50,12 @@ public class CreatureModel extends EntityModel<CreatureRenderState> {
     public void setupAnim(CreatureRenderState state) {
         super.setupAnim(state);
 
+        if (state.inCage) {
+            return;
+        }
+
         // TODO: Change based on movement speed
-        float amplitudeMultiplier = state.entityData.animationData().getOrDefault(AQUATIC_BASE_AMPLITUDE_MULTIPLIER, 1.0F) / 5.0F;
+        float amplitudeMultiplier = (state.entityData.animationData().getOrDefault(AQUATIC_BASE_AMPLITUDE_MULTIPLIER, 1.0F) / 5.0F);
         float angleMultiplier = state.entityData.animationData().getOrDefault(AQUATIC_BASE_ANGLE_MULTIPLIER, 1.0F) * 2.0F;
         if (!state.isInWater) {
             amplitudeMultiplier *= 1.3F;

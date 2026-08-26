@@ -145,7 +145,7 @@ public class EntityDataGenerator {
                     int z = rand.nextInt(1, segment.z() / 3 + 1);
                     int x = rand.nextInt(Math.min(y, z), Math.max(y, z) + 1);
                     decorations.computeIfAbsent(i, _ -> new ArrayList<>(1)).add(new EntityData.CubeSegment(segment.x0() + segment.x() / 2.0F - x / 2.0F + Mth.sin(zRot) * x,
-                            segment.y0() - Mth.cos(zRot) * Mth.sqrt(y * y + z * z),
+                            -segment.y0() -segment.y() - Mth.cos(zRot) * Mth.sqrt(y * y + z * z),
                             segment.z0() + segment.z() / 2.0F - z / 2.0F,
                             x, y, z, 0, 0, zRot,
                             uv.getLeft(), uv.getRight(), "top_fin"));
@@ -163,7 +163,7 @@ public class EntityDataGenerator {
                     int z = rand.nextInt(Math.min(3, segment.z() / 3), Math.max(segment.z(), 6));
 
                     float x0 = segment.x0() + segment.x() / 2.0F - x / 2.0F;
-                    float y0 = segment.y0() + segment.y() / 2.0F - y / 2.0F;
+                    float y0 = - segment.y0() - segment.y() / 2.0F - y / 2.0F;
 
                     decorations.computeIfAbsent(i, _ -> new ArrayList<>(1)).add(new EntityData.CubeSegment(x0 + x, y0, segment.z0(), x, y, z, 0, Mth.PI, 0, uv.getLeft(), uv.getRight(), "left_fin"));
                     decorations.computeIfAbsent(i, _ -> new ArrayList<>(1)).add(new EntityData.CubeSegment(x0, y0, segment.z0() + segment.z(), x, y, z, uv.getLeft(), uv.getRight(), "right_fin"));
@@ -181,7 +181,7 @@ public class EntityDataGenerator {
             int y = Mth.clamp(noseYZDistribution.nextValue(), 1, head.y() / 2);
             int z = Mth.clamp(noseYZDistribution.nextValue(), 1, head.z() / 2);
             float yOffset = rand.nextFloat() * (head.y() / 2.0F - y / 2.0F) + head.y() / 2.0F - y / 2.0F;
-            float y0 = head.y0() + yOffset;
+            float y0 = -head.y0() - head.y() + yOffset;
             var uv = generateUV(rand);
 
             decorations.computeIfAbsent(0,_ -> new ArrayList<>(1)).add(new EntityData.CubeSegment(head.x0() - x, y0,
@@ -205,7 +205,7 @@ public class EntityDataGenerator {
 
             decorations.computeIfAbsent(lastBodySegmentIndex, _ -> new ArrayList<>(1)).add(new EntityData.CubeSegment(
                     lastBodySegment.x0() + lastBodySegment.x(),
-                    lastBodySegment.y0() + lastBodySegment.y() / 2.0F - y / 2.0F,
+                    -lastBodySegment.y0() - lastBodySegment.y() / 2.0F - y / 2.0F,
                     lastBodySegment.z0() + lastBodySegment.z() / 2.0F - z / 2.0F,
                     x, y, z, uv.getLeft(), uv.getRight(), "tail"));
         }
@@ -226,15 +226,16 @@ public class EntityDataGenerator {
             if (rand.nextFloat() < Config.ONE_EYE_PROBABILITY.get()) {
                 int yz = Mth.clamp(eyeXZDistribution.nextValue() * 2, 1, head.z() / 3);
                 float yOffset = rand.nextFloat() * (head.y() / 3.0F - yz / 2.0F);
-                float y0 = head.y0() + yOffset;
+                float y0 = -head.y() - head.y0() + yOffset;
 
                 decorations.computeIfAbsent(-1, _ -> new ArrayList<>(1)).add(new EntityData.CubeSegment(head.x0() - x,
                         y0, head.z0() + head.z() / 2.0F - yz / 2.0F, x, yz, yz, uv.getLeft(), uv.getRight(), "eye_1"));
             } else {
                 // Two eyes
                 int yz = Mth.clamp(eyeXZDistribution.nextValue(), 1, head.x() / 3);
-                float yOffset = rand.nextFloat() * (head.y() / 2.0F - yz / 2.0F) - 2;
-                float y0 = head.y0() + yOffset;
+//                float yOffset = rand.nextFloat() * (head.y() / 2.0F - yz / 2.0F) - 2;
+                float yOffset = rand.nextFloat() * (head.y() / 3.0F);
+                float y0 = -head.y() - head.y0() + yOffset;
 
                 decorations.computeIfAbsent(-1, _ -> new ArrayList<>(1)).add(new EntityData.CubeSegment(head.x0() - x,
                         y0, head.z0() + head.z() / 2.0F - yz / 2.0F - head.z() / 4.0F, x, yz, yz, uv.getLeft(), uv.getRight(), "eye_1"));

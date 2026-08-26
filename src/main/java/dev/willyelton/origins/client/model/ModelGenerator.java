@@ -70,14 +70,13 @@ public class ModelGenerator {
                 throw new IllegalArgumentException("Decoration must have a name");
             }
 
-            PartPose partPose = PartPose.offsetAndRotation(cubeSegment.x0() - entityData.sizes().centerX(), cubeSegment.y0(), cubeSegment.z0() - entityData.sizes().centerZ(), cubeSegment.xRot(), cubeSegment.yRot(), cubeSegment.zRot());
+            PartPose partPose = PartPose.offsetAndRotation(cubeSegment.x0() - entityData.sizes().centerX(), 24 + cubeSegment.y0(), cubeSegment.z0() - entityData.sizes().centerZ(), cubeSegment.xRot(), cubeSegment.yRot(), cubeSegment.zRot());
             // Use this for unattached decorations. For know hard coded to eyes
             if (key == -1) {
                 eyes.addOrReplaceChild(cubeSegment.name(), builder, partPose);
             } else {
                 allBodyParts.get(key).addOrReplaceChild(cubeSegment.name(), builder, partPose);
             }
-
         }));
     }
 
@@ -88,8 +87,9 @@ public class ModelGenerator {
 
         for (int i = 0; i < cubeSegments.size(); i++) {
             EntityData.CubeSegment segment = cubeSegments.get(i);
+            // WTF minecraft
             builders.get(i).texOffs(segment.u(), segment.v())
-                    .addBox(segment.x0() - sizes.centerX(), segment.y0(), segment.z0() - sizes.centerZ(), segment.x(), segment.y(), segment.z());
+                    .addBox(segment.x0() - sizes.centerX(), 24 - segment.y() - segment.y0(), segment.z0() - sizes.centerZ(), segment.x(), segment.y(), segment.z());
         }
     }
 

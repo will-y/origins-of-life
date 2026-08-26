@@ -2,6 +2,8 @@ package dev.willyelton.origins;
 
 import com.mojang.logging.LogUtils;
 import dev.willyelton.origins.common.DataComponents;
+import dev.willyelton.origins.common.block.DisplayCaseBlock;
+import dev.willyelton.origins.common.block.entity.DisplayCaseBlockEntity;
 import dev.willyelton.origins.common.entity.AquaticCreature;
 import dev.willyelton.origins.common.entity.data.behavior.Behavior;
 import dev.willyelton.origins.common.item.CageItem;
@@ -25,6 +27,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.PushReaction;
@@ -57,22 +60,30 @@ public class OriginsOfLife {
     private static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(Registries.FLUID, MODID);
     private static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(NeoForgeRegistries.FLUID_TYPES, MODID);
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MODID);
 
     // Blocks
     public static final DeferredHolder<Block, Block> FOSSIL_BLOCK_DEEPSLATE = BLOCKS.registerBlock("fossil_block_deepslate", Block::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE));
     public static final DeferredHolder<Block, Block> FOSSIL_BLOCK_SULFUR = BLOCKS.registerBlock("fossil_block_sulfur", Block::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.SULFUR));
     public static final DeferredHolder<Block, Block> FOSSIL_BLOCK_CLAY = BLOCKS.registerBlock("fossil_block_clay", Block::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.CLAY));
+    public static final DeferredHolder<Block, Block> DISPLAY_CASE = BLOCKS.registerBlock("display_case", DisplayCaseBlock::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS));
 
     // Block Items
     public static final DeferredItem<BlockItem> FOSSIL_BLOCK_ITEM_DEEPSLATE = ITEMS.registerSimpleBlockItem(FOSSIL_BLOCK_DEEPSLATE);
     public static final DeferredItem<BlockItem> FOSSIL_BLOCK_ITEM_SULFUR = ITEMS.registerSimpleBlockItem(FOSSIL_BLOCK_SULFUR);
     public static final DeferredItem<BlockItem> FOSSIL_BLOCK_ITEM_CLAY = ITEMS.registerSimpleBlockItem(FOSSIL_BLOCK_CLAY);
+    public static final DeferredItem<BlockItem> DISPLAY_CASE_ITEM = ITEMS.registerSimpleBlockItem(DISPLAY_CASE, properties -> properties
+            .component(net.minecraft.core.component.DataComponents.LORE, new ItemLore(
+                    List.of(Component.translatable("lore.origins_of_life.display_case")))));
+
+    // Block Entities
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DisplayCaseBlockEntity>> DISPLAY_CASE_BLOCK_ENTITY = BLOCK_ENTITIES.register("crystal_furnace", () -> new BlockEntityType<>(DisplayCaseBlockEntity::new, DISPLAY_CASE.get()));
 
     // Entities
     public static final DeferredHolder<EntityType<?>, EntityType<AquaticCreature>> AQUATIC_CREATURE = ENTITIES.register("aquatic_creature",
             () -> EntityType.Builder.of(((EntityType.EntityFactory<AquaticCreature>) AquaticCreature::new), MobCategory.WATER_CREATURE)
-                    .sized(1, 10)
-                    .eyeHeight(0.8F)
+                    .sized(1, 1)
+                    .eyeHeight(0.5F)
                     .updateInterval(20)
                     .build(ResourceKey.create(Registries.ENTITY_TYPE, rl("aquatic_creature"))));
 
@@ -143,6 +154,7 @@ public class OriginsOfLife {
                         output.accept(cleanFossil(null));
                         output.accept(PRIMORDIAL_SOUP_BUCKET);
                         output.accept(CAGE);
+                        output.accept(DISPLAY_CASE_ITEM);
                     })
                     .build());
 
@@ -153,6 +165,7 @@ public class OriginsOfLife {
         FLUID_TYPES.register(modEventBus);
         FLUIDS.register(modEventBus);
         TABS.register(modEventBus);
+        BLOCK_ENTITIES.register(modEventBus);
         DataComponents.COMPONENTS.register(modEventBus);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);

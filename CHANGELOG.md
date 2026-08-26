@@ -1,4 +1,11 @@
 # Origins of Life Changelog
+## 26.2.0.3-alpha
+- Added the Display Case!
+  - Allows you to display your creatures in a nice little glass box
+  - Right-click a filled cage to insert an entity
+  - Right-click with an empty cage to retrieve it
+  - If you break the Display Case, the entity will spawn where you broke it
+  
 ## 26.2.0.2-alpha
 - Fossil blocks now mine correctly
   - Pickaxe for deepslate and sulfur
