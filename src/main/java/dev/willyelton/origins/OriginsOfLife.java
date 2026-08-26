@@ -1,6 +1,7 @@
 package dev.willyelton.origins;
 
 import com.mojang.logging.LogUtils;
+import com.mojang.serialization.MapCodec;
 import dev.willyelton.origins.common.DataComponents;
 import dev.willyelton.origins.common.block.DisplayCaseBlock;
 import dev.willyelton.origins.common.block.entity.DisplayCaseBlockEntity;
@@ -8,8 +9,11 @@ import dev.willyelton.origins.common.entity.AquaticCreature;
 import dev.willyelton.origins.common.entity.data.behavior.Behavior;
 import dev.willyelton.origins.common.item.CageItem;
 import dev.willyelton.origins.common.item.FossilItem;
+import dev.willyelton.origins.common.item.ScalpelItem;
+import dev.willyelton.origins.common.recipe.DnaSampleFossilRecipe;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
@@ -28,6 +32,7 @@ import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -67,6 +72,7 @@ public class OriginsOfLife {
     private static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(NeoForgeRegistries.FLUID_TYPES, MODID);
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MODID);
+    public static final DeferredRegister<RecipeSerializer<?>> RECIPES = DeferredRegister.create(Registries.RECIPE_SERIALIZER, MODID);
 
     // Blocks
     public static final DeferredHolder<Block, Block> FOSSIL_BLOCK_DEEPSLATE = BLOCKS.registerBlock("fossil_block_deepslate", Block::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE));
@@ -104,11 +110,18 @@ public class OriginsOfLife {
             .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.POISON, 100, 0), 0.6F))
             .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.HUNGER, 600, 0), 0.8F))
             .build();
-
-    public static final DeferredItem<Item> RAW_MEAT = ITEMS.registerSimpleItem("mystery_meat_raw", properties ->  properties
+    public static final DeferredItem<Item> RAW_MEAT = ITEMS.registerSimpleItem("mystery_meat_raw", properties -> properties
             .food(Foods.BEEF, RAW_MEAT_CONSUMABLE)
             .component(net.minecraft.core.component.DataComponents.LORE, new ItemLore(List.of(Component.translatable("lore.origins_of_life.mystery_meat_raw")))));
-    public static final DeferredItem<Item> COOKED_MEAT = ITEMS.registerSimpleItem("mystery_meat", properties ->  properties.food(Foods.COOKED_BEEF));
+    public static final DeferredItem<Item> COOKED_MEAT = ITEMS.registerSimpleItem("mystery_meat", properties -> properties.food(Foods.COOKED_BEEF));
+    public static final DeferredItem<Item> DNA_SAMPLE = ITEMS.registerItem("dna_sample", Item::new,
+            properties -> properties.component(net.minecraft.core.component.DataComponents.LORE, new ItemLore(
+                    List.of(Component.translatable("lore.origins_of_life.dna_sample")))));
+    public static final DeferredItem<Item> SCALPEL = ITEMS.registerItem("scalpel", ScalpelItem::new,
+            properties -> properties
+                    .durability(100)
+                    .component(net.minecraft.core.component.DataComponents.LORE, new ItemLore(
+                            List.of(Component.translatable("lore.origins_of_life.scalpel")))));
 
     // Fluids
     public static final DeferredHolder<FluidType, FluidType> PRIMORDIAL_SOUP_TYPE = FLUID_TYPES.register(
@@ -155,12 +168,16 @@ public class OriginsOfLife {
                     .block(OriginsOfLife.PRIMORDIAL_SOUP_BLOCK)
                     .bucket(PRIMORDIAL_SOUP_BUCKET);
 
+    // Recipes
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<DnaSampleFossilRecipe>> DNA_FOSSIL_RECIPE = RECIPES.register("dns_fossil", () -> new RecipeSerializer<>(MapCodec.unit(DnaSampleFossilRecipe.INSTANCE), StreamCodec.unit(DnaSampleFossilRecipe.INSTANCE)));
+
+
     // Creative Tabs
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TAB = TABS.register("origins_of_life_tab", () ->
             CreativeModeTab.builder()
                     .title(Component.translatable("tab.origins_of_life"))
                     .icon(() -> cleanFossil(null))
-                    .displayItems((params, output) -> {
+                    .displayItems((_, output) -> {
                         output.accept(AQUATIC_SPAWN_EGG);
                         output.accept(FOSSIL_BLOCK_ITEM_DEEPSLATE);
                         output.accept(FOSSIL_BLOCK_ITEM_SULFUR);
@@ -172,6 +189,8 @@ public class OriginsOfLife {
                         output.accept(DISPLAY_CASE_ITEM);
                         output.accept(RAW_MEAT);
                         output.accept(COOKED_MEAT);
+                        output.accept(DNA_SAMPLE);
+                        output.accept(SCALPEL);
                     })
                     .build());
 
@@ -183,6 +202,7 @@ public class OriginsOfLife {
         FLUIDS.register(modEventBus);
         TABS.register(modEventBus);
         BLOCK_ENTITIES.register(modEventBus);
+        RECIPES.register(modEventBus);
         DataComponents.COMPONENTS.register(modEventBus);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);

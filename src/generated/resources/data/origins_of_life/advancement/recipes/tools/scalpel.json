@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_dna": {
+      "conditions": {
+        "items": [
+          {
+            "items": "origins_of_life:dna_sample"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "origins_of_life:scalpel"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_dna"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "origins_of_life:scalpel"
+    ]
+  }
+}

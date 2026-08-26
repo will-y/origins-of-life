@@ -2,9 +2,6 @@
 
 ## Modjam End
 - Test on dedicated server
-- Some way to record entity data and then clone
-  - Scraper + Genetic Sample Item
-  - Craft with something to then throw in soup?
 - Display Case
   - Screenshots
   - Crafting recipe in readme

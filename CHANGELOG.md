@@ -1,8 +1,12 @@
 # Origins of Life Changelog
-## 26.2.0.4-alpha
+## 26.2.0.4-beta
 - Adds Mystery Meat
   - Eating raw meat will apply poison and hunger
   - Can be cooked
+- Adds DNA Sample and Scalpel
+  - DNA Samples are collected by right-clicking a creature with a scalpel
+    - This does 0.5 hearts of damage
+  - Combine with cobblestone, cobbled deepslate, or blackstone to turn into a fossil
 
 ## 26.2.0.3-alpha
 - Adds the Display Case!
