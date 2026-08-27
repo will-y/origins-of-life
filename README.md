@@ -1,6 +1,8 @@
 # Origins of Life
 A mod about procedurally generated creatures
 
+Download on [CurseForge](https://www.curseforge.com/minecraft/mc-mods/origins-of-life)
+
 ## Features
 ### Fossils
 Deep underground and underwater, you can find fossilised fragments of creatures from the past.
@@ -28,7 +30,7 @@ If you throw your cleaned off fossils in a pool of primordial soup, it will even
 ### Display Case
 Displace cases are blocks that you can use to display any creature you want.
 
-To put a creature in the case, just right click a filled cage on the display case.
+To put a creature in the case, just right-click a filled cage on the display case.
 
 To remove a creature, either break the case (this will spawn the entity in the world), or use an empty cage.
 
