@@ -47,6 +47,7 @@ public class OriginsOfLifeModels extends ModelProvider {
         itemModels.generateFlatItem(OriginsOfLife.COOKED_MEAT.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(OriginsOfLife.DNA_SAMPLE.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(OriginsOfLife.SCALPEL.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
+        itemModels.generateFlatItem(OriginsOfLife.MAGNIFYING_GLASS.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
 
         generateFossil(itemModels);
         generateCage(itemModels);

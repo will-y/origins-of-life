@@ -9,6 +9,7 @@ import dev.willyelton.origins.common.entity.AquaticCreature;
 import dev.willyelton.origins.common.entity.data.behavior.Behavior;
 import dev.willyelton.origins.common.item.CageItem;
 import dev.willyelton.origins.common.item.FossilItem;
+import dev.willyelton.origins.common.item.MagnifyingGlassItem;
 import dev.willyelton.origins.common.item.ScalpelItem;
 import dev.willyelton.origins.common.recipe.DnaSampleFossilRecipe;
 import net.minecraft.core.registries.Registries;
@@ -105,7 +106,7 @@ public class OriginsOfLife {
     public static final DeferredItem<Item> FOSSIL = ITEMS.registerItem("fossil", FossilItem::new,
             properties -> properties.component(net.minecraft.core.component.DataComponents.LORE, new ItemLore(
                     List.of(Component.translatable("lore.origins_of_life.fossil_dirty")))));
-    public static final DeferredItem<CageItem> CAGE = ITEMS.registerItem("cage", CageItem::new);
+    public static final DeferredItem<CageItem> CAGE = ITEMS.registerItem("cage", CageItem::new, properties -> properties.stacksTo(1));
     public static final Consumable RAW_MEAT_CONSUMABLE = defaultFood()
             .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.POISON, 100, 0), 0.6F))
             .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.HUNGER, 600, 0), 0.8F))
@@ -122,7 +123,11 @@ public class OriginsOfLife {
                     .durability(100)
                     .component(net.minecraft.core.component.DataComponents.LORE, new ItemLore(
                             List.of(Component.translatable("lore.origins_of_life.scalpel")))));
-
+    public static final DeferredItem<Item> MAGNIFYING_GLASS = ITEMS.registerItem("magnifying_glass", MagnifyingGlassItem::new,
+            properties -> properties
+                    .stacksTo(1)
+                    .component(net.minecraft.core.component.DataComponents.LORE, new ItemLore(
+                            List.of(Component.translatable("lore.origins_of_life.magnifying_glass")))));
     // Fluids
     public static final DeferredHolder<FluidType, FluidType> PRIMORDIAL_SOUP_TYPE = FLUID_TYPES.register(
             "primordial_soup",
@@ -171,7 +176,6 @@ public class OriginsOfLife {
     // Recipes
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<DnaSampleFossilRecipe>> DNA_FOSSIL_RECIPE = RECIPES.register("dns_fossil", () -> new RecipeSerializer<>(MapCodec.unit(DnaSampleFossilRecipe.INSTANCE), StreamCodec.unit(DnaSampleFossilRecipe.INSTANCE)));
 
-
     // Creative Tabs
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TAB = TABS.register("origins_of_life_tab", () ->
             CreativeModeTab.builder()
@@ -191,6 +195,7 @@ public class OriginsOfLife {
                         output.accept(COOKED_MEAT);
                         output.accept(DNA_SAMPLE);
                         output.accept(SCALPEL);
+                        output.accept(MAGNIFYING_GLASS);
                     })
                     .build());
 

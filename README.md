@@ -50,6 +50,12 @@ Combine this DNA sample with cobblestone, cobbled deepslate, or blackstone to ge
 
 This fossil can then be used to grow an exact copy of your creature in primordial soup.
 
+### Magnifying Glass
+Craft a magnifying glass to be able to display stats about your creature. (It works with creatures in display cases as well!)
+
+![Magnifying Glass Crafting](https://github.com/will-y/origins-of-life/raw/main/img/magnifying_glass_crafting.png)
+![Magnifying Glass](https://github.com/will-y/origins-of-life/raw/main/img/magnifying_glass.png)
+
 ### Configurations
 Some features of how a creature is generated (and a few other aspects of the mod) can be configured:
 #### General

@@ -3,6 +3,7 @@ package dev.willyelton.origins.common.entity.data.behavior;
 import com.mojang.serialization.MapCodec;
 import dev.willyelton.origins.common.entity.CreatureEntity;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
@@ -21,17 +22,19 @@ import java.util.List;
 import static dev.willyelton.origins.OriginsOfLife.rl;
 
 public enum PlayerBehavior implements Behavior, StringRepresentable {
-    NEUTRAL("Neutral"),
-    AFRAID("Afraid"),
-    AGGRESSIVE("Aggressive");
+    NEUTRAL("Player Neutral", TextColor.WHITE.getValue()),
+    AFRAID("Player Afraid", TextColor.AQUA.getValue()),
+    AGGRESSIVE("Player Aggressive", TextColor.RED.getValue()),;
 
     public static final MapCodec<PlayerBehavior> CODEC = StringRepresentable.fromEnum(PlayerBehavior::values).fieldOf("playerBehavior");
     public static final StreamCodec<FriendlyByteBuf, PlayerBehavior> STREAM_CODEC = NeoForgeStreamCodecs.enumCodec(PlayerBehavior.class);
 
     private final String description;
+    private final int displayColor;
 
-    PlayerBehavior(String description) {
+    PlayerBehavior(String description, int displayColor) {
         this.description = description;
+        this.displayColor = displayColor;
     }
 
     @Override
@@ -47,6 +50,11 @@ public enum PlayerBehavior implements Behavior, StringRepresentable {
     @Override
     public String description() {
         return description;
+    }
+
+    @Override
+    public int displayColor() {
+        return this.displayColor;
     }
 
     @Override

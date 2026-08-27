@@ -1,4 +1,10 @@
 # Origins of Life Changelog
+## 26.2.0.6-beta
+- Changed cage stack size to 1
+- Fixes an issue where display cases would get locked to displaying one entity
+- Adds the Magnifying Glass
+  - Right-click on creature (or creature in display case) to get stats about them
+
 ## 26.2.0.5-beta
 - Fixes lighting in display cases
 - Fixes creatures despawning

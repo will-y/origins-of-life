@@ -5,11 +5,17 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.willyelton.origins.common.entity.data.behavior.Behavior;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.item.TooltipFlag;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -116,6 +122,44 @@ public final class EntityData {
                 ", defaultAttributes=" + defaultAttributes +
                 ", color=" + color +
                 '}';
+    }
+
+    public List<Component> displayComponents(LivingEntity entity) {
+        List<CubeSegment> decorations = this.modelData.decorations.values().stream().flatMap(List::stream).toList();
+        Style headerStyle = Style.EMPTY.withBold(true).withColor(TextColor.GRAY);
+
+        List<Component> results = new ArrayList<>();
+        results.add(entity.getDisplayName());
+        results.add(Component.literal("-----------------"));
+        results.add(Component.literal("Model").withStyle(headerStyle));
+        results.add(Component.literal(String.format("    %s Body Segments", this.modelData.bodySegments.size())));
+        results.add(Component.literal(String.format("    %s Fins", decorationsWithName("fin", decorations))));
+        if (decorationsWithName("tail", decorations) > 0) {
+            results.add(Component.literal("        Tail"));
+        }
+        int eyeCount = decorationsWithName("eye", decorations);
+        if (eyeCount == 1) {
+            results.add(Component.literal("    1 Eye"));
+        } else if (eyeCount == 2) {
+            results.add(Component.literal("    2 Eyes"));
+        }
+        results.add(Component.literal("Colors").withStyle(headerStyle));
+        results.add(Component.literal(String.format("    Body Color: %d", this.color)).withColor(this.color));
+        results.add(Component.literal(String.format("    Eye Color: %d", this.eyeColor)).withColor(this.eyeColor));
+        results.add(Component.literal("Attributes").withStyle(headerStyle));
+        defaultAttributes.forEach((key, v) -> {
+            results.add(Component.literal("    ").append(key.value().toBaseComponent(v, entity.getAttributeBaseValue(key), false, TooltipFlag.NORMAL)));
+        });
+        results.add(Component.literal("Behaviors").withStyle(headerStyle));
+        behaviors.forEach(behavior -> {
+            results.add(Component.literal(String.format("    %s", behavior.description())).withColor(behavior.displayColor()));
+        });
+
+        return results;
+    }
+
+    private int decorationsWithName(String name, List<CubeSegment> decorations) {
+        return (int) decorations.stream().filter(segment -> segment.name.contains(name)).count();
     }
 
     public record CubeSegment(float x0, float y0, float z0, int x, int y, int z, float xRot, float yRot, float zRot,

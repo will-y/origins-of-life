@@ -36,6 +36,7 @@ public class ScalpelItem extends Item {
                 }
             }
         }
+
         return super.interactLivingEntity(itemStack, player, target, type);
     }
 }

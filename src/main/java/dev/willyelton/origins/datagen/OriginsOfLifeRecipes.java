@@ -54,6 +54,14 @@ public class OriginsOfLifeRecipes extends RecipeProvider {
                 .unlockedBy("has_dna", has(OriginsOfLife.DNA_SAMPLE))
                 .save(output);
 
+        shaped(RecipeCategory.TOOLS, OriginsOfLife.MAGNIFYING_GLASS)
+                .pattern(" p")
+                .pattern("s ")
+                .define('s', Items.STICK)
+                .define('p', Items.GLASS_PANE)
+                .unlockedBy("has_glass_pane", has(Items.GLASS_PANE))
+                .save(output);
+
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(OriginsOfLife.RAW_MEAT), RecipeCategory.FOOD, CookingBookCategory.FOOD, OriginsOfLife.COOKED_MEAT, 0.35F, 200)
                 .unlockedBy("has_mystery_meat", HAS_MEAT)
                 .save(this.output);

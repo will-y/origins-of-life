@@ -44,4 +44,8 @@ public interface Behavior {
     default List<TargetGoal> createTargetGoals(CreatureEntity entity) {
         return List.of();
     }
+
+    default int displayColor() {
+        return -1;
+    }
 }

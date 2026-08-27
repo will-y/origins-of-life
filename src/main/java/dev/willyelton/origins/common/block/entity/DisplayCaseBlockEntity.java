@@ -82,6 +82,10 @@ public class DisplayCaseBlockEntity extends BlockEntity {
 
     public void setEntityData(@Nullable EntityData entityData) {
         this.entityData = entityData;
+        if (this.entityData == null) {
+            this.entity = null;
+        }
+
         if (this.level != null) {
             this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), Block.UPDATE_NEIGHBORS | UPDATE_CLIENTS);
         }
@@ -90,6 +94,7 @@ public class DisplayCaseBlockEntity extends BlockEntity {
 
     public @Nullable Entity displayEntity() {
         if (this.entityData == null || this.level == null) {
+            this.entity = null;
             return null;
         }
 
