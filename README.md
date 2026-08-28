@@ -1,5 +1,5 @@
 # Origins of Life
-A mod about procedurally generated creatures
+A mod about procedurally generated creatures using the DNA and fossil remains of long ago.
 
 Download on [CurseForge](https://www.curseforge.com/minecraft/mc-mods/origins-of-life)
 
