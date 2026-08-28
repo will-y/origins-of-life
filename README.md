@@ -58,6 +58,19 @@ Craft a magnifying glass to be able to display stats about your creature. (It wo
 ![Magnifying Glass Crafting](https://github.com/will-y/origins-of-life/raw/main/img/magnifying_glass_crafting.png)
 ![Magnifying Glass](https://github.com/will-y/origins-of-life/raw/main/img/magnifying_glass.png)
 
+### Breeding
+You can breed two aquatic creatures together!
+
+Each creature is assigned a random "food" tag that it uses to breed. The pool that they can select from is all vanilla entity's food tags.
+Creatures are attracted to the item in your hand, like vanilla mobs.
+
+The offspring will combine features from their parents in the following ways:
+- It selects a random model from a parent
+- It selects random behaviors from the parents
+- It selects random colors (or averages them, see breeding configs)
+- It averages attribute values +/- a random percentage
+- It selects random animation data between the parents, with small changes
+
 ### Configurations
 Some features of how a creature is generated (and a few other aspects of the mod) can be configured:
 #### General
@@ -75,6 +88,10 @@ Some features of how a creature is generated (and a few other aspects of the mod
 - `one_eye_probability` (0.2): Probability that a creature has only one eye, given it has any
 - `body_colors`: Possible Colors for Creature Bodies. Must be an integer in the form AARRGGBB
 - `eye_colors`: Possible Colors for Creature Eyes. Must be an integer in the form AARRGGBB
+
+#### Breeding
+- `average_body_color` (false): Average parent's colors when breeding instead of picking one
+- `average_eye_color` (false): Average parent's eye colors when breeding instead of picking one
 
 ## Creature Information
 Currently, only aquatic creatures are implemented. This means that every time you spawn a new random creature, it will 

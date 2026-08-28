@@ -1,12 +1,10 @@
 # TODO
 
 ## Modjam End
-- Test on dedicated server
-- Breeding 2 creatures together
-  - At least get attributes working
-  - Model combinations if time
-- Some way to view stuff about entities
 - More behavior (other mob behavior)
+- Model breeding
+- Babies are smaller and grow
+- Breeding and following items are a little buggy
 
 ## Maybe at Some Point
 - Decorations

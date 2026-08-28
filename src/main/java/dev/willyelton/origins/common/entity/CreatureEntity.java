@@ -9,11 +9,12 @@ import net.minecraft.world.entity.EntityAttachments;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -23,14 +24,14 @@ import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 
 import java.util.Map;
 
-public abstract class CreatureEntity extends PathfinderMob implements IEntityWithComplexSpawn {
+public abstract class CreatureEntity extends Animal implements IEntityWithComplexSpawn {
 
 //    private static final EntityDataAccessor<EntityData> ENTITY_DATA_STATE = SynchedEntityData.defineId(
 //            CreatureEntity.class, EntityDataSerializer.forValueType(EntityData.STREAM_CODEC));
 
     private EntityData entityData;
 
-    protected CreatureEntity(EntityType<? extends PathfinderMob> type, Level level, EntityData entityData) {
+    protected CreatureEntity(EntityType<? extends Animal> type, Level level, EntityData entityData) {
         this.entityData = entityData;
         super(type, level);
         init();
@@ -52,7 +53,7 @@ public abstract class CreatureEntity extends PathfinderMob implements IEntityWit
         this.setHealth(this.getMaxHealth());
     }
 
-    protected CreatureEntity(EntityType<? extends PathfinderMob> type, Level level) {
+    protected CreatureEntity(EntityType<? extends Animal> type, Level level) {
         this(type, level, EntityDataGenerator.random(level));
     }
 
@@ -115,5 +116,10 @@ public abstract class CreatureEntity extends PathfinderMob implements IEntityWit
         // Closer but can't rotate these:
 //        return new AABB(position.x - sizes.maxX() / 32.0, position.y, position.z - sizes.maxZ() / 32.0,
 //                position.x + sizes.maxX() / 32.0, position.y + sizes.maxY() / 16.0, position.z + sizes.maxZ() / 32.0);
+    }
+
+    @Override
+    public boolean isFood(ItemStack itemStack) {
+        return itemStack.is(entityData.foodTag());
     }
 }

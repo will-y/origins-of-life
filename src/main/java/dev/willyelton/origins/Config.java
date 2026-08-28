@@ -22,6 +22,9 @@ public class Config {
     public static ModConfigSpec.DoubleValue EYES_PROBABILITY;
     public static ModConfigSpec.DoubleValue ONE_EYE_PROBABILITY;
 
+    public static ModConfigSpec.BooleanValue AVERAGE_BODY_COLOR;
+    public static ModConfigSpec.BooleanValue AVERAGE_EYE_COLOR;
+
     public static ModConfigSpec.ConfigValue<List<? extends Integer>> BODY_COLORS;
     public static ModConfigSpec.ConfigValue<List<? extends Integer>> EYE_COLORS;
 
@@ -41,7 +44,7 @@ public class Config {
                 .defineInRange("fossil_transform_ticks", 400, 1, 10000);
         builder.pop();
 
-        builder.comment("Creature Generation Settings", "Test").push("entity_generation");
+        builder.comment("Creature Generation Settings").push("entity_generation");
         TOP_FIN_PROBABILITY = builder.comment("Probability that a creature has top fins")
                 .defineInRange("top_fin_probability", 0.7, 0, 1);
         TOP_FIN_PER_SEGMENT_PROBABILITY = builder.comment("Probability that a specific body segment has a top fin, given they have any")
@@ -63,7 +66,14 @@ public class Config {
                         .defineList("body_colors", () -> DEFAULT_BODY_COLORS, () -> -1, _ -> true);
         EYE_COLORS = builder.comment("Possible Colors for Creature Eyes. Must be an integer in the form AARRGGBB")
                 .defineList("eye_colors", () -> DEFAULT_EYE_COLORS, () -> -1, _ -> true);
-
         builder.pop();
+
+        builder.comment("Creature Breeding Settings").push("breeding");
+        AVERAGE_BODY_COLOR = builder.comment("Average parent's colors when breeding instead of picking one")
+                        .define("average_body_color", false);
+        AVERAGE_EYE_COLOR = builder.comment("Average parent's eye colors when breeding instead of picking one")
+                .define("average_eye_color", false);
+        builder.pop();
+
     }
 }

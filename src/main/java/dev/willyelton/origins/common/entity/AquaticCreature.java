@@ -1,19 +1,24 @@
 package dev.willyelton.origins.common.entity;
 
 import dev.willyelton.origins.OriginsOfLife;
+import dev.willyelton.origins.common.entity.data.EntityBreeder;
 import dev.willyelton.origins.common.entity.data.EntityData;
 import dev.willyelton.origins.common.entity.data.EntityDataGenerator;
 import dev.willyelton.origins.common.entity.data.behavior.Behavior;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.BreedGoal;
+import net.minecraft.world.entity.ai.goal.FollowParentGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.PanicGoal;
 import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal;
+import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
@@ -21,6 +26,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidType;
+import org.jspecify.annotations.Nullable;
 
 public class AquaticCreature extends CreatureEntity {
     public AquaticCreature(EntityType<? extends AquaticCreature> type, Level level) {
@@ -37,8 +43,11 @@ public class AquaticCreature extends CreatureEntity {
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(0, new PanicGoal(this, 1.25));
+        this.goalSelector.addGoal(1, new BreedGoal(this, 1.0));
+        this.goalSelector.addGoal(2, new TemptGoal(this, 1.25, i -> i.is(entityData().foodTag()), false));
+        this.goalSelector.addGoal(3, new FollowParentGoal(this, 1.25));
 
-        int prio = 1;
+        int prio = 4;
         int targetPrio = 0;
         for (Behavior behavior : this.entityData().behaviors()) {
             for (Goal goal : behavior.createGoals(this)) {
@@ -92,6 +101,16 @@ public class AquaticCreature extends CreatureEntity {
     @Override
     public boolean isPushedByFluid(FluidType fluidType) {
         return false;
+    }
+
+    @Override
+    public @Nullable AquaticCreature getBreedOffspring(ServerLevel level, AgeableMob partner) {
+        if (partner instanceof AquaticCreature aquaticCreature) {
+            EntityData entityData = EntityBreeder.breed(this.entityData(), aquaticCreature.entityData(), level.getRandom());
+            return new AquaticCreature(level, entityData);
+        }
+
+        return null;
     }
 
     private static class AquaticCreatureMoveControl<T extends AquaticCreature> extends MoveControl<T> {

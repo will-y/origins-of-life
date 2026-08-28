@@ -4,15 +4,21 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.willyelton.origins.common.entity.data.behavior.Behavior;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
 import java.util.ArrayList;
@@ -20,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /// Stores all attributes of an entity (cannot change)
@@ -32,7 +39,8 @@ public final class EntityData {
             Codec.unboundedMap(Attribute.CODEC, Codec.DOUBLE).fieldOf("defaultAttributes").forGetter(EntityData::defaultAttributes),
             Codec.INT.fieldOf("color").forGetter(EntityData::color),
             Codec.INT.fieldOf("eyeColor").forGetter(EntityData::eyeColor),
-            Behavior.CODEC.listOf().fieldOf("behaviors").forGetter(EntityData::behaviors)
+            Behavior.CODEC.listOf().fieldOf("behaviors").forGetter(EntityData::behaviors),
+            TagKey.codec(Registries.ITEM).optionalFieldOf("foodTag").xmap(k -> k.orElse(ItemTags.COW_FOOD), Optional::ofNullable).forGetter(EntityData::foodTag)
     ).apply(instance, EntityData::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, EntityData> STREAM_CODEC = StreamCodec.composite(
@@ -42,6 +50,7 @@ public final class EntityData {
             ByteBufCodecs.INT, EntityData::color,
             ByteBufCodecs.INT, EntityData::eyeColor,
             Behavior.STREAM_CODEC.apply(ByteBufCodecs.list()), EntityData::behaviors,
+            ByteBufCodecs.optional(TagKey.streamCodec(Registries.ITEM)).map(k -> k.orElse(ItemTags.COW_FOOD), Optional::ofNullable), EntityData::foodTag,
             EntityData::new);
 
     private final ModelData modelData;
@@ -52,21 +61,23 @@ public final class EntityData {
     private final int eyeColor;
     /// List of behaviors in priority order. These will create goals and target goals for the entity
     private final List<Behavior> behaviors;
+    private final TagKey<Item> foodTag;
 
     public EntityData(CubeSegment head, List<CubeSegment> bodySegments, Map<Integer, List<CubeSegment>> decorations,
                       Map<String, Float> animationData, Map<Holder<Attribute>, Double> defaultAttributes, int color,
-                      int eyeColor, List<Behavior> behaviors) {
-        this(new ModelData(head, bodySegments, decorations), animationData, defaultAttributes, color, eyeColor, behaviors);
+                      int eyeColor, List<Behavior> behaviors, TagKey<Item> foodTag) {
+        this(new ModelData(head, bodySegments, decorations), animationData, defaultAttributes, color, eyeColor, behaviors, foodTag);
     }
 
     public EntityData(ModelData modelData, Map<String, Float> animationData, Map<Holder<Attribute>, Double> defaultAttributes,
-                      int color, int eyeColor, List<Behavior> behaviors) {
+                      int color, int eyeColor, List<Behavior> behaviors, TagKey<Item> foodTag) {
         this.modelData = modelData;
         this.animationData = animationData;
         this.defaultAttributes = defaultAttributes;
         this.color = color;
         this.eyeColor = eyeColor;
         this.behaviors = behaviors;
+        this.foodTag = foodTag;
     }
 
     public ModelData modelData() {
@@ -95,6 +106,10 @@ public final class EntityData {
 
     public List<CubeSegment> allSegments() {
         return modelData.allSegments();
+    }
+
+    public TagKey<Item> foodTag() {
+        return this.foodTag;
     }
 
     /// Returns some things about the computed model's size (in model space, not block space)
@@ -143,17 +158,35 @@ public final class EntityData {
         } else if (eyeCount == 2) {
             results.add(Component.literal("    2 Eyes"));
         }
+
         results.add(Component.literal("Colors").withStyle(headerStyle));
         results.add(Component.literal(String.format("    Body Color: %d", this.color)).withColor(this.color));
         results.add(Component.literal(String.format("    Eye Color: %d", this.eyeColor)).withColor(this.eyeColor));
+
         results.add(Component.literal("Attributes").withStyle(headerStyle));
         defaultAttributes.forEach((key, v) -> {
             results.add(Component.literal("    ").append(key.value().toBaseComponent(v, entity.getAttributeBaseValue(key), false, TooltipFlag.NORMAL)));
         });
+
         results.add(Component.literal("Behaviors").withStyle(headerStyle));
         behaviors.forEach(behavior -> {
             results.add(Component.literal(String.format("    %s", behavior.description())).withColor(behavior.displayColor()));
         });
+
+        results.add(Component.literal("Breeding Items").withStyle(headerStyle));
+        int count = 0;
+        boolean broken = false;
+        for (Holder<Item> itemHolder : BuiltInRegistries.ITEM.getTagOrEmpty(this.foodTag)) {
+            if (++count > 10) {
+                broken = true;
+            } else if (!broken) {
+                results.add(itemHolder.value().getName(new ItemStack(itemHolder.value())));
+            }
+        }
+
+        if (broken) {
+            results.add(Component.literal(String.format("and %s more", count - 10)));
+        }
 
         return results;
     }

@@ -8,10 +8,13 @@ import dev.willyelton.origins.util.random.IntegerNormalDistribution;
 import dev.willyelton.origins.util.random.NormalDistribution;
 import dev.willyelton.origins.util.random.WeightedDistribution;
 import net.minecraft.core.Holder;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -69,9 +72,16 @@ public class EntityDataGenerator {
             -3404746   // Angler Crimson Red (0xFFCC0836)
     );
 
+    private static final List<TagKey<Item>> FOOD_TAGS = List.of(ItemTags.SNIFFER_FOOD, ItemTags.PIGLIN_FOOD, ItemTags.FOX_FOOD, ItemTags.COW_FOOD,
+            ItemTags.GOAT_FOOD, ItemTags.SHEEP_FOOD, ItemTags.WOLF_FOOD, ItemTags.CAT_FOOD, ItemTags.HORSE_FOOD, ItemTags.ZOMBIE_HORSE_FOOD,
+            ItemTags.HAPPY_GHAST_FOOD, ItemTags.CAMEL_FOOD, ItemTags.CAMEL_HUSK_FOOD, ItemTags.ARMADILLO_FOOD, ItemTags.CHICKEN_FOOD,
+            ItemTags.FROG_FOOD, ItemTags.HOGLIN_FOOD, ItemTags.LLAMA_FOOD, ItemTags.OCELOT_FOOD, ItemTags.PANDA_FOOD, ItemTags.PIG_FOOD,
+            ItemTags.RABBIT_FOOD, ItemTags.STRIDER_FOOD, ItemTags.TURTLE_FOOD, ItemTags.PARROT_FOOD, ItemTags.AXOLOTL_FOOD, ItemTags.NAUTILUS_FOOD,
+            ItemTags.SULFUR_CUBE_FOOD, ItemTags.BEE_FOOD);
+
     public static EntityData empty() {
         return new EntityData(new EntityData.CubeSegment(0, 0, 0, 1, 1, 1, 0, 0), new ArrayList<>(),
-                new HashMap<>(), new HashMap<>(), new HashMap<>(), -1, -1, List.of());
+                new HashMap<>(), new HashMap<>(), new HashMap<>(), -1, -1, List.of(), ItemTags.COW_FOOD);
     }
 
     public static EntityData random(Level level) {
@@ -106,7 +116,8 @@ public class EntityDataGenerator {
         }
 
         return new EntityData(head, bodySegments, decorations, generateAnimationData(rand), generateDefaultAttributes(rand),
-                randomElement(rand, Config.BODY_COLORS.get()), randomElement(rand, Config.EYE_COLORS.get()), generateBehaviors(rand));
+                randomElement(rand, Config.BODY_COLORS.get()), randomElement(rand, Config.EYE_COLORS.get()), generateBehaviors(rand),
+                randomElement(rand, FOOD_TAGS));
     }
 
     private static EntityData.CubeSegment nextSegment(EntityData.CubeSegment current, Distribution<Integer> xDistribution,
@@ -266,6 +277,7 @@ public class EntityDataGenerator {
         defaultAttributes.put(Attributes.MAX_HEALTH, generateAttribute(rand, 15, 5, 0.5F));
         defaultAttributes.put(Attributes.MOVEMENT_SPEED, generateAttribute(rand, 1, 0.5F, 0.1F));
         defaultAttributes.put(Attributes.SCALE, generateAttribute(rand, 1, 0.3F, 0.1F));
+        defaultAttributes.put(Attributes.TEMPT_RANGE, generateAttribute(rand, 10, 2F, 1));
         return defaultAttributes;
     }
 
