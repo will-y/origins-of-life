@@ -14,37 +14,37 @@ import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.animal.AgeableWaterCreature;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 import java.util.List;
 
 import static dev.willyelton.origins.OriginsOfLife.rl;
 
-public enum PlayerBehavior implements Behavior, StringRepresentable {
-    NEUTRAL("Player Neutral", TextColor.WHITE.getValue()),
-    AFRAID("Player Afraid", TextColor.AQUA.getValue()),
-    AGGRESSIVE("Player Aggressive", TextColor.RED.getValue());
+public enum MobBehavior implements Behavior, StringRepresentable {
+    NEUTRAL("Mob Neutral", TextColor.WHITE.getValue()),
+    AFRAID("Mob Afraid", TextColor.AQUA.getValue()),
+    AGGRESSIVE("Mob Aggressive", TextColor.RED.getValue());
 
-    public static final MapCodec<PlayerBehavior> CODEC = StringRepresentable.fromEnum(PlayerBehavior::values).fieldOf("playerBehavior");
-    public static final StreamCodec<FriendlyByteBuf, PlayerBehavior> STREAM_CODEC = NeoForgeStreamCodecs.enumCodec(PlayerBehavior.class);
+    public static final MapCodec<MobBehavior> CODEC = StringRepresentable.fromEnum(MobBehavior::values).fieldOf("mobBehavior");
+    public static final StreamCodec<FriendlyByteBuf, MobBehavior> STREAM_CODEC = NeoForgeStreamCodecs.enumCodec(MobBehavior.class);
 
     private final String description;
     private final int displayColor;
 
-    PlayerBehavior(String description, int displayColor) {
+    MobBehavior(String description, int displayColor) {
         this.description = description;
         this.displayColor = displayColor;
     }
 
     @Override
     public String behaviorName() {
-        return "Player Relation";
+        return "Mob Relation";
     }
 
     @Override
     public Identifier identifier() {
-        return rl("player_behavior");
+        return rl("mob_behavior");
     }
 
     @Override
@@ -60,7 +60,7 @@ public enum PlayerBehavior implements Behavior, StringRepresentable {
     @Override
     public List<Goal> createGoals(CreatureEntity entity) {
         return switch (this) {
-            case AFRAID ->  List.of(new AvoidEntityGoal<>(entity, Player.class, 8.0F, 1.2, 3, EntitySelector.NO_SPECTATORS));
+            case AFRAID ->  List.of(new AvoidEntityGoal<>(entity, AgeableWaterCreature.class, 8.0F, 1.2, 3, EntitySelector.NO_SPECTATORS));
             case AGGRESSIVE, NEUTRAL -> List.of(new MeleeAttackGoal(entity, 1.0, false));
         };
     }
@@ -75,7 +75,7 @@ public enum PlayerBehavior implements Behavior, StringRepresentable {
         return switch (this) {
             case NEUTRAL -> List.of(new HurtByTargetGoal(entity));
             case AFRAID -> List.of();
-            case AGGRESSIVE -> List.of(new NearestAttackableTargetGoal<>(entity, Player.class, true));
+            case AGGRESSIVE -> List.of(new NearestAttackableTargetGoal<>(entity, AgeableWaterCreature.class, true));
         };
     }
 

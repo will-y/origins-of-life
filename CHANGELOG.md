@@ -1,4 +1,20 @@
 # Origins of Life Changelog
+## 26.2.2.2
+- Adds a new behavior: Mob Relation
+  - Same as the player behavior, can either be:
+    - Aggressive - Will attack squids and dolphins
+      - Has a new corresponding tag `fossil_mob_behavior_aggressive`
+        - Default items are:
+          - All Axes
+    - Neutral - Won't do anything
+      - Has a new corresponding tag `fossil_mob_behavior_neutral`
+        - Default items are:
+          - All planks
+    - Afraid - Will run away from squids and dolphins
+      - Has a new corresponding tag `fossil_mob_behavior_afraid`
+        - Default items are:
+          - All boots
+
 ## 26.2.2.1
 - Updates the move control to the same one that dolphins use
 - Messes with hitboxes again

@@ -49,5 +49,14 @@ public class OriginsOfLifeItemTagsGen extends ItemTagsProvider {
                         Items.ENDER_EYE.builtInRegistryHolder().getKey(),
                         Items.CHORUS_FRUIT.builtInRegistryHolder().getKey(),
                         Items.SLIME_BALL.builtInRegistryHolder().getKey());
+
+        tag(OriginsOfLifeTags.FOSSIL_MOB_BEHAVIOR_AGGRESSIVE)
+                .addTag(ItemTags.AXES);
+
+        tag(OriginsOfLifeTags.FOSSIL_MOB_BEHAVIOR_NEUTRAL)
+                .addTag(ItemTags.PLANKS);
+
+        tag(OriginsOfLifeTags.FOSSIL_MOB_BEHAVIOR_AFRAID)
+            .addTag(ItemTags.FOOT_ARMOR);
     }
 }

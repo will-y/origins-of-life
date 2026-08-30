@@ -2,6 +2,7 @@ package dev.willyelton.origins.common.entity.data;
 
 import dev.willyelton.origins.Config;
 import dev.willyelton.origins.common.entity.data.behavior.Behavior;
+import dev.willyelton.origins.common.entity.data.behavior.MobBehavior;
 import dev.willyelton.origins.common.entity.data.behavior.PlayerBehavior;
 import dev.willyelton.origins.util.random.Distribution;
 import dev.willyelton.origins.util.random.IntegerNormalDistribution;
@@ -337,6 +338,14 @@ public class EntityDataGenerator {
             case 0 -> behaviors.add(PlayerBehavior.NEUTRAL);
             case 1 -> behaviors.add(PlayerBehavior.AFRAID);
             case 2 -> behaviors.add(PlayerBehavior.AGGRESSIVE);
+        }
+
+        int mobBehavior = dist.nextValue();
+
+        switch (mobBehavior) {
+            case 0 -> behaviors.add(MobBehavior.NEUTRAL);
+            case 1 -> behaviors.add(MobBehavior.AFRAID);
+            case 2 -> behaviors.add(MobBehavior.AGGRESSIVE);
         }
 
         return behaviors;

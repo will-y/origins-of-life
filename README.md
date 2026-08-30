@@ -34,10 +34,10 @@ change certain things about your creature!
     - Sugar Cane
     - Redstone
     - Redstone Block (note that the time reduced is the same as using a single dust)
-- Throw an item in the tag `fossil_player_behavior_aggressive` to make the resulting creature aggressive
+- Throw an item in the tag `fossil_player_behavior_aggressive` to make the resulting creature aggressive towards players
   - Default items are:
     - All Swords
-- Throw an item in the tag `fossil_player_behavior_neutral` to make the resulting creature neutral
+- Throw an item in the tag `fossil_player_behavior_neutral` to make the resulting creature neutral towards players
   - Default items are:
     - All flowers
     - All leaves
@@ -48,6 +48,15 @@ change certain things about your creature!
     - Eye of Ender
     - Slime Ball
     - Chorus Fruit
+- Throw an item in the tag `fossil_mob_behavior_aggressive` to make the resulting creature aggressive towards squids and dolphins
+  - Default items are:
+    - All Axes
+- Throw an item in the tag `fossil_mob_behavior_neutral` to make the resulting creature neutral towarsd players
+  - Default items are:
+    - All planks
+- Throw an item in the tag `fossil_mob_behavior_afraid` to make the resulting creature afraid of squids and dolphins
+  - Default items are:
+    - All boots
 - Throw any dye in the soup to make the creature the color of that dye
   - This is a way to get colors that are normally not possible
 

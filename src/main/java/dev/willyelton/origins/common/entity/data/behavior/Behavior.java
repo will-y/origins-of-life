@@ -27,8 +27,10 @@ public interface Behavior {
 
     static void bootstrap() {
         ID_MAPPER.put(rl("player_behavior"), PlayerBehavior.CODEC);
+        ID_MAPPER.put(rl("mob_behavior"), MobBehavior.CODEC);
 
         STREAM_CODEC_BI_MAP.put(rl("player_behavior"), PlayerBehavior.STREAM_CODEC);
+        STREAM_CODEC_BI_MAP.put(rl("mob_behavior"), MobBehavior.STREAM_CODEC);
     }
 
     String behaviorName();
