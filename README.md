@@ -113,6 +113,7 @@ Some features of how a creature is generated (and a few other aspects of the mod
 - `cage_pickup_other_entities` (false): Allows the player to use the cage to pick up entities not from this mod
 - `fossil_transform_ticks` (400): Ticks that it takes to transform a fossil into a creature
 - `fossil_speed_item_ticks` (40): Ticks that a speed item takes off of the total fossil time
+- `display_case_look_at_player` (true): If true, creatures in display cases will look at the player
 
 #### Creature Generation
 - `top_fin_probability` (0.7): Probability that a creature has top fins

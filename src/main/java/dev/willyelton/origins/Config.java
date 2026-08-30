@@ -13,7 +13,7 @@ public class Config {
     public static ModConfigSpec.BooleanValue CAGE_PICKUP_OTHER_ENTITIES;
     public static ModConfigSpec.IntValue FOSSIL_TRANSFORM_TICKS;
     public static ModConfigSpec.IntValue FOSSIL_SPEED_ITEM_TICKS;
-
+    public static ModConfigSpec.BooleanValue DISPLAY_CASE_LOOK_AT_PLAYER;
 
     public static ModConfigSpec.DoubleValue TOP_FIN_PROBABILITY;
     public static ModConfigSpec.DoubleValue TOP_FIN_PER_SEGMENT_PROBABILITY;
@@ -46,6 +46,8 @@ public class Config {
                 .defineInRange("fossil_transform_ticks", 400, 1, 10000);
         FOSSIL_SPEED_ITEM_TICKS = builder.comment("Ticks that a speed item takes off of the total fossil time")
                         .defineInRange("fossil_speed_item_ticks", 40, 1, 10000);
+        DISPLAY_CASE_LOOK_AT_PLAYER = builder.comment("If true, creatures in display cases will look at the player")
+                        .define("display_case_look_at_player", true);
         builder.pop();
 
         builder.comment("Creature Generation Settings").push("entity_generation");

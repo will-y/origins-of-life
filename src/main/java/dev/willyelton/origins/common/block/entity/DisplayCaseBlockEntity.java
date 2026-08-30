@@ -8,6 +8,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntitySpawnRequest;
@@ -15,6 +16,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -28,6 +30,7 @@ import static net.minecraft.world.level.block.Block.UPDATE_CLIENTS;
 public class DisplayCaseBlockEntity extends BlockEntity {
     private @Nullable EntityData entityData;
     private @Nullable Entity entity;
+    private float placedRotation;
 
     public DisplayCaseBlockEntity(BlockPos worldPosition, BlockState blockState) {
         super(OriginsOfLife.DISPLAY_CASE_BLOCK_ENTITY.get(), worldPosition, blockState);
@@ -38,6 +41,7 @@ public class DisplayCaseBlockEntity extends BlockEntity {
         super.loadAdditional(input);
 
         this.entityData = input.read("entity_data", EntityData.CODEC).orElse(null);
+        this.placedRotation = input.getFloatOr("placed_rotation", 0.0F);
     }
 
     @Override
@@ -47,6 +51,8 @@ public class DisplayCaseBlockEntity extends BlockEntity {
         if (this.entityData != null) {
             output.store("entity_data", EntityData.CODEC, this.entityData);
         }
+
+        output.putFloat("placed_rotation", this.placedRotation);
     }
 
     @Override
@@ -80,10 +86,19 @@ public class DisplayCaseBlockEntity extends BlockEntity {
         return this.entityData;
     }
 
-    public void setEntityData(@Nullable EntityData entityData) {
+    public float placedRotation() {
+        return this.placedRotation;
+    }
+
+    public void setEntityData(@Nullable EntityData entityData, Player player) {
         this.entityData = entityData;
         if (this.entityData == null) {
             this.entity = null;
+            this.placedRotation = 0.0F;
+        } else {
+            double dX = getBlockPos().getX() + 0.5 - player.getX();
+            double dZ = getBlockPos().getZ() + 0.5 - player.getZ();
+            this.placedRotation = (float) Math.atan2(dX, dZ) + Mth.PI;
         }
 
         if (this.level != null) {

@@ -1,10 +1,4 @@
 # TODO
-
-## Modjam End
-- More behavior (other mob behavior)
-- Config option to make creatures not look at you in cage (they should stay looking at the player when they were placed)
-- Breeding and following items are a little buggy
-
 ## Maybe at Some Point
 - Decorations
   - horns?

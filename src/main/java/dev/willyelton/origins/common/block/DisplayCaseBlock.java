@@ -46,14 +46,14 @@ public class DisplayCaseBlock extends BaseEntityBlock {
                     EntityData cageEntityData = stack.get(DataComponents.ENTITY_DATA);
                     if (blockEntity.entityData() == null) {
                         if (cageEntityData != null) {
-                            blockEntity.setEntityData(cageEntityData);
+                            blockEntity.setEntityData(cageEntityData, player);
                             CageItem.removeDataComponents(stack);
 
                             return InteractionResult.SUCCESS_SERVER;
                         }
                     } else if (cageEntityData == null) {
                         ((CageItem) stack.getItem()).captureMob(stack, serverLevel, serverPlayer, (LivingEntity) blockEntity.displayEntity());
-                        blockEntity.setEntityData(null);
+                        blockEntity.setEntityData(null, player);
                         blockEntity.setChanged();
                     }
                 }

@@ -2,6 +2,7 @@ package dev.willyelton.origins.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import dev.willyelton.origins.Config;
 import dev.willyelton.origins.common.block.entity.DisplayCaseBlockEntity;
 import dev.willyelton.origins.common.entity.data.EntityData;
 import net.minecraft.client.Minecraft;
@@ -39,19 +40,25 @@ public class DisplayCaseBlockEntityRenderer implements BlockEntityRenderer<Displ
                 state.displayEntity = entityRenderer.extractEntity(blockEntity.displayEntity(), partialTicks);
                 state.displayEntity.lightCoords = state.lightCoords;
             }
-            Player player = Minecraft.getInstance().player;
-            if (player != null) {
-                double dX = state.blockPos.getX() + 0.5 - player.getX();
-                double dZ = state.blockPos.getZ() + 0.5 - player.getZ();
+            if (Config.DISPLAY_CASE_LOOK_AT_PLAYER.get()) {
+                Player player = Minecraft.getInstance().player;
+                if (player != null) {
+                    double dX = state.blockPos.getX() + 0.5 - player.getX();
+                    double dZ = state.blockPos.getZ() + 0.5 - player.getZ();
 
-                double dXOld = state.blockPos.getX() + 0.5 - player.xOld;
-                double dZOld = state.blockPos.getZ() + 0.5 - player.zOld;
+                    double dXOld = state.blockPos.getX() + 0.5 - player.xOld;
+                    double dZOld = state.blockPos.getZ() + 0.5 - player.zOld;
 
-                state.rotation = (float) Math.atan2(dX, dZ) + Mth.PI;
-                state.lastRotation = (float) Math.atan2(dXOld, dZOld) + Mth.PI;
-                state.partialTick = partialTicks;
+                    state.rotation = (float) Math.atan2(dX, dZ) + Mth.PI;
+                    state.lastRotation = (float) Math.atan2(dXOld, dZOld) + Mth.PI;
+                }
+            } else {
+                state.rotation = blockEntity.placedRotation();
+                state.lastRotation = blockEntity.placedRotation();
             }
         }
+
+        state.partialTick = partialTicks;
     }
 
     @Override

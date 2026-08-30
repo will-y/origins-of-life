@@ -1,4 +1,7 @@
 # Origins of Life Changelog
+## 26.2.2.3
+- Adds a new config option: `display_case_look_at_player` (true): If true, creatures in display cases will look at the player
+
 ## 26.2.2.2
 - Adds a new behavior: Mob Relation
   - Same as the player behavior, can either be:
