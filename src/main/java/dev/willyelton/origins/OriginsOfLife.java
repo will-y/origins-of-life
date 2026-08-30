@@ -95,7 +95,7 @@ public class OriginsOfLife {
     // Entities
     public static final DeferredHolder<EntityType<?>, EntityType<AquaticCreature>> AQUATIC_CREATURE = ENTITIES.register("aquatic_creature",
             () -> EntityType.Builder.of(((EntityType.EntityFactory<AquaticCreature>) AquaticCreature::new), MobCategory.WATER_CREATURE)
-                    .sized(1, 1)
+                    .sized(3, 3)
                     .eyeHeight(0.5F)
                     .updateInterval(20)
                     .build(ResourceKey.create(Registries.ENTITY_TYPE, rl("aquatic_creature"))));

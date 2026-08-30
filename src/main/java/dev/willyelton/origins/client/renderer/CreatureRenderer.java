@@ -47,17 +47,16 @@ public class CreatureRenderer extends MobRenderer<CreatureEntity, CreatureRender
     @Override
     public void submit(CreatureRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
         ModelPart root = CreatureModels.getRoot(state.entityData.modelData());
+        poseStack.pushPose();
+        poseStack.scale(state.ageScale, state.ageScale, state.ageScale);
         this.model = new CreatureModel(root.getChild("main"));
-
         super.submit(state, poseStack, submitNodeCollector, camera);
-
         Model<CreatureRenderState> eyeModel = new CreatureModel(root.getChild("eyes"));
 
         // TODO: This is bad and should mixin or something else
         poseStack.pushPose();
         float scale = state.scale;
         poseStack.scale(scale, scale, scale);
-        poseStack.scale(state.ageScale, state.ageScale, state.ageScale);
         this.setupRotations(state, poseStack, state.bodyRot, scale);
         poseStack.scale(-1.0F, -1.0F, 1.0F);
         this.scale(state, poseStack);
@@ -74,6 +73,7 @@ public class CreatureRenderer extends MobRenderer<CreatureEntity, CreatureRender
             );
         }
         eyeModel.setupAnim(state);
+        poseStack.popPose();
         poseStack.popPose();
     }
 

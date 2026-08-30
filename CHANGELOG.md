@@ -1,4 +1,11 @@
 # Origins of Life Changelog
+## 26.2.2.1
+- Updates the move control to the same one that dolphins use
+- Messes with hitboxes again
+- Babies should actually appear smaller now
+- Babies will not attack you
+- Aquatic creatures now try to find water instead of just dying on land
+
 ## 26.2.2.0
 - Changes one of the 4 creature textures to be less noisy
 - Adds the ability to change features about your creature while the fossil is turning into a creature

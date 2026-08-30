@@ -34,7 +34,6 @@ public abstract class CreatureEntity extends Animal implements IEntityWithComple
         this.entityData = entityData;
         super(type, level);
         init();
-
     }
 
     private void init() {
@@ -101,7 +100,7 @@ public abstract class CreatureEntity extends Animal implements IEntityWithComple
 
     private EntityDimensions createDimensions(EntityData entityData) {
         EntityData.Sizes sizes = entityData.sizes();
-        float x = (sizes.maxX() / 16.0F) * this.getScale() * 0.8F;
+        float x = Math.min(3, (sizes.maxX() / 16.0F) * this.getScale());
         float y = (sizes.maxY() / 16.0F) * this.getScale() * 0.8F;
 
         return EntityDimensions.scalable(x, y).withEyeHeight(y * 0.85F);
