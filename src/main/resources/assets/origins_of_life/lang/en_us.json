@@ -44,5 +44,6 @@
   "origins_of_life.configuration.one_eye_probability": "One Eye Probability",
   "origins_of_life.configuration.breeding": "Breeding Settings",
   "origins_of_life.configuration.average_body_color": "Average Body Color",
-  "origins_of_life.configuration.average_eye_color": "Average Eye Color"
+  "origins_of_life.configuration.average_eye_color": "Average Eye Color",
+  "origins_of_life.configuration.fossil_speed_item_ticks": "Fossil Speed Item Ticks Reduced"
 }

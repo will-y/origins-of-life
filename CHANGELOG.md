@@ -1,4 +1,31 @@
 # Origins of Life Changelog
+## 26.2.2.0
+- Changes one of the 4 creature textures to be less noisy
+- Adds the ability to change features about your creature while the fossil is turning into a creature
+  - Throw an item in the new tag `fossil_speed_items` to reduce the time that it takes for the creature to form
+    - Default items are:
+      - Sugar
+      - Sugar Cane
+      - Redstone
+      - Redstone Block (note that the time reduced is the same as using a single dust)
+  - Throw an item in the new tag `fossil_player_behavior_aggressive` to make the resulting creature aggressive
+    - Default items are:
+      - All Swords
+  - Throw an item in the new tag `fossil_player_behavior_neutral` to make the resulting creature neutral
+    - Default items are:
+      - All flowers
+      - All leaves
+  - Throw an item in the new tag `fossil_player_behavior_afraid` to make the resulting creature afraid of players
+    - Default items are:
+      - All Amethyst related items
+      - Ender pearl
+      - Eye of Ender
+      - Slime Ball
+      - Chorus Fruit
+  - Throw any dye in the soup to make the creature the color of that dye
+    - This is a way to get colors that are normally not possible
+- Adds new config option `fossil_speed_item_ticks` (40): Ticks that a speed item takes off of the total fossil time
+
 ## 26.2.1.0
 - Adds breeding
   - Each creature gets a random "Food" tag that it uses to breed. These are pulled from all vanilla entity's food tags.

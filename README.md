@@ -24,6 +24,33 @@ Fossils can be cleaned off by right-clicked a cauldron filled with water.
 ### Regrow the Mobs of the Past
 If you throw your cleaned off fossils in a pool of primordial soup, it will eventually transform into a random creature!
 
+#### Change Creatures while they are forming in the soup!
+While your fossil is transforming, you can throw many items into the soup with it (within 2 blocks of the fossil item) to
+change certain things about your creature!
+
+- Throw an item in the tag `fossil_speed_items` to reduce the time that it takes for the creature to form
+  - Default items are:
+    - Sugar
+    - Sugar Cane
+    - Redstone
+    - Redstone Block (note that the time reduced is the same as using a single dust)
+- Throw an item in the tag `fossil_player_behavior_aggressive` to make the resulting creature aggressive
+  - Default items are:
+    - All Swords
+- Throw an item in the tag `fossil_player_behavior_neutral` to make the resulting creature neutral
+  - Default items are:
+    - All flowers
+    - All leaves
+- Throw an item in the tag `fossil_player_behavior_afraid` to make the resulting creature afraid of players
+  - Default items are:
+    - All Amethyst related items
+    - Ender pearl
+    - Eye of Ender
+    - Slime Ball
+    - Chorus Fruit
+- Throw any dye in the soup to make the creature the color of that dye
+  - This is a way to get colors that are normally not possible
+
 ### Capture your new creature in a cage!
 ![Cage Crafting](https://github.com/will-y/origins-of-life/raw/main/img/cage.png)
 
@@ -76,6 +103,7 @@ Some features of how a creature is generated (and a few other aspects of the mod
 #### General
 - `cage_pickup_other_entities` (false): Allows the player to use the cage to pick up entities not from this mod
 - `fossil_transform_ticks` (400): Ticks that it takes to transform a fossil into a creature
+- `fossil_speed_item_ticks` (40): Ticks that a speed item takes off of the total fossil time
 
 #### Creature Generation
 - `top_fin_probability` (0.7): Probability that a creature has top fins

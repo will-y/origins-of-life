@@ -10,8 +10,10 @@ import static dev.willyelton.origins.common.entity.data.EntityDataGenerator.DEFA
 public class Config {
     public static final ModConfigSpec COMMON_CONFIG;
 
-    public static ModConfigSpec.IntValue FOSSIL_TRANSFORM_TICKS;
     public static ModConfigSpec.BooleanValue CAGE_PICKUP_OTHER_ENTITIES;
+    public static ModConfigSpec.IntValue FOSSIL_TRANSFORM_TICKS;
+    public static ModConfigSpec.IntValue FOSSIL_SPEED_ITEM_TICKS;
+
 
     public static ModConfigSpec.DoubleValue TOP_FIN_PROBABILITY;
     public static ModConfigSpec.DoubleValue TOP_FIN_PER_SEGMENT_PROBABILITY;
@@ -42,6 +44,8 @@ public class Config {
         FOSSIL_TRANSFORM_TICKS = builder
                 .comment("Ticks that it takes to transform a fossil into a creature")
                 .defineInRange("fossil_transform_ticks", 400, 1, 10000);
+        FOSSIL_SPEED_ITEM_TICKS = builder.comment("Ticks that a speed item takes off of the total fossil time")
+                        .defineInRange("fossil_speed_item_ticks", 40, 1, 10000);
         builder.pop();
 
         builder.comment("Creature Generation Settings").push("entity_generation");

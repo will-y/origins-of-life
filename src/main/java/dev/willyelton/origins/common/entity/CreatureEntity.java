@@ -5,7 +5,6 @@ import dev.willyelton.origins.common.entity.data.EntityDataGenerator;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.EntityAttachments;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -97,22 +96,23 @@ public abstract class CreatureEntity extends Animal implements IEntityWithComple
 
     @Override
     protected EntityDimensions getDefaultDimensions(Pose pose) {
-        return dimensions;
+        return dimensions.scale(this.getAgeScale());
     }
 
     private EntityDimensions createDimensions(EntityData entityData) {
-        float x = entityData.allSegments().stream().mapToInt(EntityData.CubeSegment::x).sum() / 16.0F;
-        float y = entityData.allSegments().stream().mapToInt(EntityData.CubeSegment::y).max().orElse(0) / 16.0F;
+        EntityData.Sizes sizes = entityData.sizes();
+        float x = (sizes.maxX() / 16.0F) * this.getScale() * 0.8F;
+        float y = (sizes.maxY() / 16.0F) * this.getScale() * 0.8F;
 
-        return new EntityDimensions(x, y, 0.85F * y, EntityAttachments.createDefault(x, y), false);
+        return EntityDimensions.scalable(x, y).withEyeHeight(y * 0.85F);
     }
 
     @Override
     protected AABB makeBoundingBox(Vec3 position) {
-//        return this.dimensions.makeBoundingBox(position);
-        EntityData.Sizes sizes = entityData.sizes();
-        return new AABB(position.x - sizes.maxX() / 32.0, position.y, position.z - sizes.maxX() / 32.0,
-                position.x + sizes.maxX() / 32.0, position.y + sizes.maxY() / 16.0, position.z + sizes.maxX() / 32.0);
+        return this.dimensions.makeBoundingBox(position);
+//        EntityData.Sizes sizes = entityData.sizes();
+//        return new AABB(position.x - sizes.maxX() / 32.0, position.y, position.z - sizes.maxX() / 32.0,
+//                position.x + sizes.maxX() / 32.0, position.y + sizes.maxY() / 16.0, position.z + sizes.maxX() / 32.0);
         // Closer but can't rotate these:
 //        return new AABB(position.x - sizes.maxX() / 32.0, position.y, position.z - sizes.maxZ() / 32.0,
 //                position.x + sizes.maxX() / 32.0, position.y + sizes.maxY() / 16.0, position.z + sizes.maxZ() / 32.0);

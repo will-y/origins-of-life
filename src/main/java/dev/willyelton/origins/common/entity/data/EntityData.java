@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /// Stores all attributes of an entity (cannot change)
@@ -191,6 +192,23 @@ public final class EntityData {
         return results;
     }
 
+    public EntityData withColor(int color) {
+        return new EntityData(modelData.copy(), animationData.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)),
+                defaultAttributes.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)),
+                color, eyeColor, behaviors.stream().toList(), foodTag);
+    }
+
+    public EntityData withBehavior(Behavior behavior) {
+        List<Behavior> newBehaviors = this.behaviors.stream()
+                .filter(b -> !b.identifier().equals(behavior.identifier()))
+                .collect(Collectors.toList());
+        newBehaviors.add(behavior);
+
+        return new EntityData(modelData.copy(), animationData.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)),
+                defaultAttributes.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)),
+                color, eyeColor, newBehaviors, foodTag);
+    }
+
     private int decorationsWithName(String name, List<CubeSegment> decorations) {
         return (int) decorations.stream().filter(segment -> segment.name.contains(name)).count();
     }
@@ -247,6 +265,10 @@ public final class EntityData {
             int i = random.nextIntBetweenInclusive(min, max);
             return new CubeSegment(i, i, i, u, v);
         }
+
+        public CubeSegment copy() {
+            return new CubeSegment(x0, y0, z0, x, y, z, xRot, yRot, zRot, u, v, name);
+        }
     }
 
     public record ModelData(CubeSegment head, List<CubeSegment> bodySegments,
@@ -272,6 +294,11 @@ public final class EntityData {
             Sizes sizes = new Sizes(maxX, maxY, maxZ, maxX / 2.0F, maxY / 2.0F, maxZ / 2.0F);
 
             this(head, bodySegments, decorations, allSegments, sizes);
+        }
+
+        public ModelData copy() {
+            return new ModelData(head.copy(), bodySegments.stream().map(CubeSegment::copy).toList(),
+                    decorations.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().stream().map(CubeSegment::copy).toList())));
         }
     }
 

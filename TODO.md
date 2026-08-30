@@ -2,8 +2,7 @@
 
 ## Modjam End
 - More behavior (other mob behavior)
-- Model breeding
-- Babies are smaller and grow
+- Config option to make creatures not look at you in cage (they should stay looking at the player when they were placed)
 - Breeding and following items are a little buggy
 
 ## Maybe at Some Point
@@ -19,3 +18,5 @@
 - Head
   - Add different head shapes
   - Change body count offset by one so it is more common to just have a head again?
+- Model breeding
+- Babies are smaller and grow (simple things did not work)

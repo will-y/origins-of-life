@@ -57,6 +57,7 @@ public class CreatureRenderer extends MobRenderer<CreatureEntity, CreatureRender
         poseStack.pushPose();
         float scale = state.scale;
         poseStack.scale(scale, scale, scale);
+        poseStack.scale(state.ageScale, state.ageScale, state.ageScale);
         this.setupRotations(state, poseStack, state.bodyRot, scale);
         poseStack.scale(-1.0F, -1.0F, 1.0F);
         this.scale(state, poseStack);
